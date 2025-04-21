@@ -41,6 +41,27 @@
         "type": "github"
       }
     },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "wrangler-flake",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1743550720,
+        "narHash": "sha256-hIshGgKZCgWh6AYJpJmRgFdR3WUbkY04o82X05xqQiY=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "c621e8422220273271f52058f618c94e405bb0f5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -109,11 +130,28 @@
         "type": "github"
       }
     },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1744904290,
+        "narHash": "sha256-ewg0m4mGwl3iO4aN73yZoT8lCgEHtapP3d/trfUE6To=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "e03df76c3a8ac2119f45ff18c9b994513dbb7a4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "e03df76c3a8ac2119f45ff18c9b994513dbb7a4c",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "android-nixpkgs": "android-nixpkgs",
         "flake-utils": "flake-utils_2",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "wrangler-flake": "wrangler-flake"
       }
     },
     "systems": {
@@ -143,6 +181,25 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "wrangler-flake": {
+      "inputs": {
+        "flake-parts": "flake-parts",
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "lastModified": 1745836852,
+        "narHash": "sha256-4rlqhVU89ypXQTWpJchMdocHNSZBVTUehiNWnAy0zJ0=",
+        "owner": "ryand56",
+        "repo": "wrangler",
+        "rev": "070db974683ef1f8e95dadef549f223381ee8544",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryand56",
+        "repo": "wrangler",
         "type": "github"
       }
     }

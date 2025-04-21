@@ -3,12 +3,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     android-nixpkgs.url = "github:tadfisher/android-nixpkgs";
+    wrangler-flake.url = "github:ryand56/wrangler";
   };
 
   outputs =
     {
       nixpkgs,
       flake-utils,
+      wrangler-flake,
       android-nixpkgs,
       ...
     }:
@@ -78,6 +80,10 @@
               typescript
               typescript-language-server
 
+              go
+              gopls
+
+              wrangler-flake.packages.${system}.wrangler
             ];
 
             shellHook = ''
