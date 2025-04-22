@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-yarn intl:build
+if [ -z "$1" ] || [ "$1" != "no-intl" ]; then
+  yarn intl:build
+fi
 yarn build-web
 
 # build system outputs some srcs and hrefs like src="static/"
