@@ -92,54 +92,20 @@
   </head>
 
   <body>
-    <!--
-      A generic no script element with a reload button and a message.
-      Feel free to customize this however you'd like.
-    -->
-    <noscript>
-      <form
-        action=""
-        style="
-          background-color: #fff;
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 9999;
-        "
-      >
-        <div
-          style="
-            font-size: 18px;
-            font-family: Helvetica, sans-serif;
-            line-height: 24px;
-            margin: 10%;
-            width: 80%;
-          "
-        >
-          <p lang="en">Oh no! It looks like JavaScript is not enabled in your browser.</p>
-          <p lang="en" style="margin: 20px 0;">
-            <button
-              type="submit"
-              style="
-                background-color: #4630eb;
-                border-radius: 100px;
-                border: none;
-                box-shadow: none;
-                color: #fff;
-                cursor: pointer;
-                font-weight: bold;
-                line-height: 20px;
-                padding: 6px 16px;
-              "
-            >
-              Reload
-            </button>
-          </p>
-        </div>
-      </form>
-    </noscript>
+  <noscript style="
+     background-color: #fff;
+     position: fixed;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     z-index: 9999;
+     margin: 1em;
+   ">
+    <h1 lang="en">JavaScript Required</h1>
+    <p lang="en">This is a heavily interactive web application, and JavaScript is required. Simple HTML interfaces are possible, but that is not what this is.
+    <p lang="en">Learn more about Bluesky at <a href="https://bsky.social">bsky.social</a> and <a href="https://atproto.com">atproto.com</a>, or this fork at <a href="https://github.com/a-viv-a/deer-social">github.com/a-viv-a/deer.social</a>.
+  </noscript>
 
     <!-- The root element for your Expo app. -->
     <div id="root">
