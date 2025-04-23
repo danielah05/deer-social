@@ -31,7 +31,7 @@ import {makeProfileLink} from '#/lib/routes/links'
 import {s} from '#/lib/styles'
 import {useDirectFetchRecords} from '#/state/preferences/direct-fetch-records'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
-import {useDirectFetchRecord} from '#/state/queries/direct-fetch-record'
+import {useDirectFetchEmbedRecord} from '#/state/queries/direct-fetch-record'
 import {precacheProfile} from '#/state/queries/profile'
 import {useResolveLinkQuery} from '#/state/queries/resolve-link'
 import {useSession} from '#/state/session'
@@ -73,7 +73,7 @@ export function MaybeQuoteEmbed({
       AppBskyEmbedRecord.isViewDetached(embed.record)) &&
     directFetchEnabled
 
-  const directRecord = useDirectFetchRecord({
+  const directRecord = useDirectFetchEmbedRecord({
     uri:
       AppBskyEmbedRecord.isViewBlocked(embed.record) ||
       AppBskyEmbedRecord.isViewDetached(embed.record)
