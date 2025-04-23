@@ -43,7 +43,11 @@ export function useDeerVerification() {
 }
 
 export function useDeerVerificationEnabled() {
-  useDeerVerification().enabled
+  return useDeerVerification().enabled
+}
+
+export function useDeerVerificationTrustedSet() {
+  return new Set(useDeerVerification().trusted)
 }
 
 export function useSetDeerVerification() {
