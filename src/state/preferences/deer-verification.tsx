@@ -39,9 +39,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
 }
 
 export function useDeerVerification() {
-  const ctx = React.useContext(stateContext)
-  if (ctx === undefined) return persisted.defaults.deerVerification!
-  return ctx
+  return React.useContext(stateContext) ?? persisted.defaults.deerVerification!
 }
 
 export function useDeerVerificationEnabled() {
