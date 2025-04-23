@@ -14,11 +14,16 @@ import {
 } from '#/lib/statsig/statsig'
 import {isWeb} from '#/platform/detection'
 import {setGeolocation, useGeolocation} from '#/state/geolocation'
+import * as persisted from '#/state/persisted'
 import {useGoLinksEnabled, useSetGoLinksEnabled} from '#/state/preferences'
 import {
   useConstellationEnabled,
   useSetConstellationEnabled,
 } from '#/state/preferences/constellation-enabled'
+import {
+  useConstellationInstance,
+  useSetConstellationInstance,
+} from '#/state/preferences/constellation-instance'
 import {
   useDirectFetchRecords,
   useSetDirectFetchRecords,
@@ -53,6 +58,7 @@ import {Earth_Stroke2_Corner2_Rounded as GlobeIcon} from '#/components/icons/Glo
 import {Lab_Stroke2_Corner0_Rounded as BeakerIcon} from '#/components/icons/Lab'
 import {PaintRoller_Stroke2_Corner2_Rounded as PaintRollerIcon} from '#/components/icons/PaintRoller'
 import {RaisingHand4Finger_Stroke2_Corner0_Rounded as RaisingHandIcon} from '#/components/icons/RaisingHand'
+import {Star_Stroke2_Corner0_Rounded as StarIcon} from '#/components/icons/Star'
 import * as Layout from '#/components/Layout'
 import {Text} from '#/components/Typography'
 
@@ -123,6 +129,70 @@ function GeolocationSettingsDialog({
   )
 }
 
+function ConstellationInstanceDialog({
+  control,
+}: {
+  control: Dialog.DialogControlProps
+}) {
+  const pal = usePalette('default')
+  const {_} = useLingui()
+
+  const [url, setUrl] = useState('')
+  const setConstellationInstance = useSetConstellationInstance()
+
+  const submit = () => {
+    setConstellationInstance(url)
+    control.close()
+    // need to clear since we don't set value of input and component may be reused
+    setUrl('')
+  }
+
+  return (
+    <Dialog.Outer control={control} nativeOptions={{preventExpansion: true}}>
+      <Dialog.Handle />
+      <Dialog.ScrollableInner label={_(msg`Constellations instance URL`)}>
+        <View style={[a.gap_sm, a.pb_lg]}>
+          <Text style={[a.text_2xl, a.font_bold]}>
+            <Trans>Constellations instance URL</Trans>
+          </Text>
+        </View>
+
+        <View style={a.gap_lg}>
+          <TextInput
+            accessibilityLabel="Text input field"
+            autoFocus
+            style={[styles.textInput, pal.border, pal.text]}
+            onChangeText={value => {
+              setUrl(value)
+            }}
+            placeholder={persisted.defaults.constellationInstance}
+            placeholderTextColor={pal.colors.textLight}
+            onSubmitEditing={submit}
+            accessibilityHint={_(
+              msg`Input the url of the constellations instance to use`,
+            )}
+          />
+
+          <View style={isWeb && [a.flex_row, a.justify_end]}>
+            <Button
+              label={_(msg`Save`)}
+              size="large"
+              onPress={submit}
+              variant="solid"
+              color="primary"
+              disabled={!URL.canParse(url)}>
+              <ButtonText>
+                <Trans>Save</Trans>
+              </ButtonText>
+            </Button>
+          </View>
+        </View>
+
+        <Dialog.Close />
+      </Dialog.ScrollableInner>
+    </Dialog.Outer>
+  )
+}
 export function DeerSettingsScreen({}: Props) {
   const {_} = useLingui()
 
@@ -146,6 +216,9 @@ export function DeerSettingsScreen({}: Props) {
 
   const location = useGeolocation()
   const setLocationControl = Dialog.useDialogControl()
+
+  const constellationInstance = useConstellationInstance()
+  const setConstellationInstanceControl = Dialog.useDialogControl()
 
   const repostCarouselEnabled = useRepostCarouselEnabled()
   const setRepostCarouselEnabled = useSetRepostCarouselEnabled()
@@ -229,6 +302,25 @@ export function DeerSettingsScreen({}: Props) {
               <Toggle.Platform />
             </Toggle.Item>
           </SettingsList.Group>
+
+          <SettingsList.Item>
+            <SettingsList.ItemIcon icon={StarIcon} />
+            <SettingsList.ItemText>
+              <Trans>{`Constellation Instance`}</Trans>
+            </SettingsList.ItemText>
+            <SettingsList.BadgeButton
+              label={_(msg`Change`)}
+              onPress={() => setConstellationInstanceControl.open()}
+            />
+          </SettingsList.Item>
+          <SettingsList.Item>
+            <Admonition type="info" style={[a.flex_1]}>
+              <Trans>
+                Constellation is used to supplement AppView responses. Current
+                instance: {constellationInstance}
+              </Trans>
+            </Admonition>
+          </SettingsList.Item>
 
           <SettingsList.Item>
             <SettingsList.ItemIcon icon={GlobeIcon} />
@@ -377,6 +469,7 @@ export function DeerSettingsScreen({}: Props) {
         </SettingsList.Container>
       </Layout.Content>
       <GeolocationSettingsDialog control={setLocationControl} />
+      <ConstellationInstanceDialog control={setConstellationInstanceControl} />
     </Layout.Screen>
   )
 }

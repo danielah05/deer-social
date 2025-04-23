@@ -132,6 +132,7 @@ const schema = z.object({
   noDiscoverFallback: z.boolean().optional(),
   repostCarouselEnabled: z.boolean().optional(),
   hideFollowNotifications: z.boolean().optional(),
+  constellationInstance: z.string().optional(),
 
   /** @deprecated */
   mutedThreads: z.array(z.string()),
@@ -193,6 +194,7 @@ export const defaults: Schema = {
   noDiscoverFallback: false,
   repostCarouselEnabled: false,
   hideFollowNotifications: false,
+  constellationInstance: 'https://constellation.microcosm.blue/',
 }
 
 export function tryParse(rawData: string): Schema | undefined {
