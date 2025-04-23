@@ -1,0 +1,64 @@
+import React from 'react'
+
+import * as persisted from '#/state/persisted'
+
+type StateContext = persisted.Schema['deerVerification']
+type SetContext = (v: persisted.Schema['deerVerification']) => void
+
+const stateContext = React.createContext<StateContext>(
+  persisted.defaults.deerVerification,
+)
+const setContext = React.createContext<SetContext>(
+  (_: persisted.Schema['deerVerification']) => {},
+)
+
+export function Provider({children}: React.PropsWithChildren<{}>) {
+  const [state, setState] = React.useState(persisted.get('deerVerification'))
+
+  const setStateWrapped = React.useCallback(
+    (deerVerification: persisted.Schema['deerVerification']) => {
+      setState(deerVerification)
+      persisted.write('deerVerification', deerVerification)
+    },
+    [setState],
+  )
+
+  React.useEffect(() => {
+    return persisted.onUpdate('deerVerification', nextDeerVerification => {
+      setState(nextDeerVerification)
+    })
+  }, [setStateWrapped])
+
+  return (
+    <stateContext.Provider value={state}>
+      <setContext.Provider value={setStateWrapped}>
+        {children}
+      </setContext.Provider>
+    </stateContext.Provider>
+  )
+}
+
+export function useDeerVerification() {
+  const ctx = React.useContext(stateContext)
+  if (ctx === undefined) return persisted.defaults.deerVerification!
+  return ctx
+}
+
+export function useDeerVerificationEnabled() {
+  useDeerVerification().enabled
+}
+
+export function useSetDeerVerification() {
+  return React.useContext(setContext)
+}
+
+export function useSetDeerVerificationEnabled() {
+  const deerVerification = useDeerVerification()
+  const setDeerVerification = useSetDeerVerification()
+
+  return React.useMemo(
+    () => (enabled: boolean) =>
+      setDeerVerification({...deerVerification, enabled}),
+    [deerVerification, setDeerVerification],
+  )
+}

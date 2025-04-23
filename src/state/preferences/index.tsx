@@ -4,6 +4,7 @@ import {Provider as AltTextRequiredProvider} from './alt-text-required'
 import {Provider as AutoplayProvider} from './autoplay'
 import {Provider as ConstellationProvider} from './constellation-enabled'
 import {Provider as ConstellationInstanceProvider} from './constellation-instance'
+import {Provider as DeerVerificationProvider} from './deer-verification'
 import {Provider as DirectFetchRecordsProvider} from './direct-fetch-records'
 import {Provider as DisableHapticsProvider} from './disable-haptics'
 import {Provider as ExternalEmbedsProvider} from './external-embeds-prefs'
@@ -47,31 +48,33 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
               <DirectFetchRecordsProvider>
                 <ConstellationProvider>
                   <ConstellationInstanceProvider>
-                    <NoDiscoverProvider>
-                      <LargeAltBadgeProvider>
-                        <ExternalEmbedsProvider>
-                          <HiddenPostsProvider>
-                            <InAppBrowserProvider>
-                              <DisableHapticsProvider>
-                                <AutoplayProvider>
-                                  <UsedStarterPacksProvider>
-                                    <SubtitlesProvider>
-                                      <TrendingSettingsProvider>
-                                        <RepostCarouselProvider>
-                                          <KawaiiProvider>
-                                            {children}
-                                          </KawaiiProvider>
-                                        </RepostCarouselProvider>
-                                      </TrendingSettingsProvider>
-                                    </SubtitlesProvider>
-                                  </UsedStarterPacksProvider>
-                                </AutoplayProvider>
-                              </DisableHapticsProvider>
-                            </InAppBrowserProvider>
-                          </HiddenPostsProvider>
-                        </ExternalEmbedsProvider>
-                      </LargeAltBadgeProvider>
-                    </NoDiscoverProvider>
+                    <DeerVerificationProvider>
+                      <NoDiscoverProvider>
+                        <LargeAltBadgeProvider>
+                          <ExternalEmbedsProvider>
+                            <HiddenPostsProvider>
+                              <InAppBrowserProvider>
+                                <DisableHapticsProvider>
+                                  <AutoplayProvider>
+                                    <UsedStarterPacksProvider>
+                                      <SubtitlesProvider>
+                                        <TrendingSettingsProvider>
+                                          <RepostCarouselProvider>
+                                            <KawaiiProvider>
+                                              {children}
+                                            </KawaiiProvider>
+                                          </RepostCarouselProvider>
+                                        </TrendingSettingsProvider>
+                                      </SubtitlesProvider>
+                                    </UsedStarterPacksProvider>
+                                  </AutoplayProvider>
+                                </DisableHapticsProvider>
+                              </InAppBrowserProvider>
+                            </HiddenPostsProvider>
+                          </ExternalEmbedsProvider>
+                        </LargeAltBadgeProvider>
+                      </NoDiscoverProvider>
+                    </DeerVerificationProvider>
                   </ConstellationInstanceProvider>
                 </ConstellationProvider>
               </DirectFetchRecordsProvider>

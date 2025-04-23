@@ -25,6 +25,10 @@ import {
   useSetConstellationInstance,
 } from '#/state/preferences/constellation-instance'
 import {
+  useDeerVerification,
+  useSetDeerVerificationEnabled,
+} from '#/state/preferences/deer-verification'
+import {
   useDirectFetchRecords,
   useSetDirectFetchRecords,
 } from '#/state/preferences/direct-fetch-records'
@@ -59,6 +63,7 @@ import {Lab_Stroke2_Corner0_Rounded as BeakerIcon} from '#/components/icons/Lab'
 import {PaintRoller_Stroke2_Corner2_Rounded as PaintRollerIcon} from '#/components/icons/PaintRoller'
 import {RaisingHand4Finger_Stroke2_Corner0_Rounded as RaisingHandIcon} from '#/components/icons/RaisingHand'
 import {Star_Stroke2_Corner0_Rounded as StarIcon} from '#/components/icons/Star'
+import {Verified_Stroke2_Corner2_Rounded as VerifiedIcon} from '#/components/icons/Verified'
 import * as Layout from '#/components/Layout'
 import {Text} from '#/components/Typography'
 
@@ -220,6 +225,9 @@ export function DeerSettingsScreen({}: Props) {
   const constellationInstance = useConstellationInstance()
   const setConstellationInstanceControl = Dialog.useDialogControl()
 
+  const deerVerification = useDeerVerification()
+  const setDeerVerificationEnabled = useSetDeerVerificationEnabled()
+
   const repostCarouselEnabled = useRepostCarouselEnabled()
   const setRepostCarouselEnabled = useSetRepostCarouselEnabled()
 
@@ -303,6 +311,29 @@ export function DeerSettingsScreen({}: Props) {
             </Toggle.Item>
           </SettingsList.Group>
 
+          <SettingsList.Group contentContainerStyle={[a.gap_sm]}>
+            <SettingsList.ItemIcon icon={VerifiedIcon} />
+            <SettingsList.ItemText>
+              <Trans>Verification</Trans>
+            </SettingsList.ItemText>
+            <Toggle.Item
+              name="custom_verifications"
+              label={_(
+                msg`Select your own set of trusted verifiers, and operate as a verifier`,
+              )}
+              value={deerVerification.enabled}
+              onChange={value => setDeerVerificationEnabled(value)}
+              style={[a.w_full]}>
+              <Toggle.LabelText style={[a.flex_1]}>
+                <Trans>
+                  Select your own set of trusted verifiers, and operate as a
+                  verifier
+                </Trans>
+              </Toggle.LabelText>
+              <Toggle.Platform />
+            </Toggle.Item>
+          </SettingsList.Group>
+
           <SettingsList.Item>
             <SettingsList.ItemIcon icon={StarIcon} />
             <SettingsList.ItemText>
@@ -316,7 +347,8 @@ export function DeerSettingsScreen({}: Props) {
           <SettingsList.Item>
             <Admonition type="info" style={[a.flex_1]}>
               <Trans>
-                Constellation is used to supplement AppView responses. Current
+                Constellation is used to supplement AppView responses for custom
+                verifications and nuclear block bypass, via backlinks. Current
                 instance: {constellationInstance}
               </Trans>
             </Admonition>
