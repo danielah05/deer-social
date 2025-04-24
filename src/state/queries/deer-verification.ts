@@ -33,13 +33,18 @@ export const RQKEY = (did: string, trusted: Set<string>) => [
   Array.from(trusted).sort(),
 ]
 
-async function requestDeerVerificationViews(
+type LinkedRecord = {
+  link: ConstellationLink
+  record: AppBskyGraphVerification.Record
+}
+
+async function fetchDeerVerificationLinkedRecords(
   agent: BskyAgent,
   instance: string,
-  profile: AnyProfileView,
+  did: string,
   trusted: Set<string>,
-): Promise<VerificationView[] | undefined> {
-  const urip = new AtUri(profile.did)
+): Promise<LinkedRecord[] | undefined> {
+  const urip = new AtUri(did)
 
   if (!urip.host.startsWith('did:')) {
     const res = await agent.resolveHandle({
@@ -61,7 +66,7 @@ async function requestDeerVerificationViews(
       100,
     )
 
-    const verifications = asyncGenFilter(
+    const verificationRecords = asyncGenFilter(
       asyncGenMap(
         asyncGenDedupe(
           asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
@@ -86,50 +91,47 @@ async function requestDeerVerificationViews(
         },
       ),
       // the explicit return type shouldn't be needed...
-      (d: {
-        link: ConstellationLink
-        record: unknown
-      }): d is {
-        link: ConstellationLink
-        record: AppBskyGraphVerification.Record
-      } =>
+      (d: {link: ConstellationLink; record: unknown}): d is LinkedRecord =>
         bsky.validate<AppBskyGraphVerification.Record>(
           d.record,
           AppBskyGraphVerification.validateRecord,
         ),
     )
 
-    const verificationViews = asyncGenMap(
-      verifications,
-      ({link, record}) =>
-        ({
-          issuer: link.did,
-          isValid:
-            profile.displayName === record.displayName &&
-            profile.handle === record.handle,
-          createdAt: record.createdAt,
-          uri: asUri(link),
-        } satisfies VerificationView),
-    )
-
     // Array.fromAsync will do this but not available everywhere yet
-    return asyncGenCollect(verificationViews)
+    return asyncGenCollect(verificationRecords)
   } catch (e) {
     console.error(e)
     return undefined
   }
 }
 
+function createVerificationViews(
+  linkedRecords: LinkedRecord[],
+  profile: AnyProfileView,
+): VerificationView[] {
+  return linkedRecords.map(({link, record}) => ({
+    issuer: link.did,
+    isValid:
+      profile.displayName === record.displayName &&
+      profile.handle === record.handle,
+    createdAt: record.createdAt,
+    uri: asUri(link),
+  }))
+}
+
 function createVerificationState(
   verifications: VerificationView[],
   profile: AnyProfileView,
   trusted: Set<string>,
-) {
+): VerificationState {
   return {
     verifications,
     verifiedStatus:
-      verifications.length > 0 && verifications.findIndex(v => v.isValid) !== -1
-        ? 'valid'
+      verifications.length > 0
+        ? verifications.findIndex(v => v.isValid) !== -1
+          ? 'valid'
+          : 'invalid'
         : 'none',
     trustedVerifierStatus: trusted.has(profile.did) ? 'valid' : 'none',
   }
@@ -153,29 +155,31 @@ export function useDeerVerificationState({
 }) {
   const {agent, instance, trusted} = useDeerVerifierCtx()
 
-  return useQuery<VerificationState | undefined>({
+  const linkedRecords = useQuery<LinkedRecord[] | undefined>({
     staleTime: STALE.HOURS.ONE,
     queryKey: RQKEY(profile?.did || '', trusted),
     async queryFn() {
       if (!profile) return undefined
 
-      const verifications = await requestDeerVerificationViews(
+      return await fetchDeerVerificationLinkedRecords(
         agent,
         instance,
-        profile,
+        profile.did,
         trusted,
       )
-      if (verifications === undefined) return
-      const verificationState = createVerificationState(
-        verifications,
-        profile,
-        trusted,
-      )
-
-      return verificationState
     },
     enabled: enabled && profile !== undefined,
   })
+
+  if (linkedRecords.data === undefined || profile === undefined) return
+  const verifications = createVerificationViews(linkedRecords.data, profile)
+  const verificationState = createVerificationState(
+    verifications,
+    profile,
+    trusted,
+  )
+
+  return verificationState
 }
 
 export function useDeerVerificationProfileOverlay<V extends AnyProfileView>(
@@ -190,7 +194,7 @@ export function useDeerVerificationProfileOverlay<V extends AnyProfileView>(
   return enabled
     ? {
         ...profile,
-        verification: verificationState.data,
+        verification: verificationState,
       }
     : profile
 }
@@ -209,7 +213,7 @@ export function useMaybeDeerVerificationProfileOverlay<
   return enabled
     ? {
         ...profile,
-        verification: verificationState.data,
+        verification: verificationState,
       }
     : profile
 }
