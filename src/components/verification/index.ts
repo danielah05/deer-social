@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 
 import {useDeerVerificationEnabled} from '#/state/preferences/deer-verification'
-import {useDeerTrustedVerificationRecords} from '#/state/queries/deer-verification'
+import {useDeerVerificationState} from '#/state/queries/deer-verification'
 import {usePreferencesQuery} from '#/state/queries/preferences'
 import {useCurrentAccountProfile} from '#/state/queries/useCurrentAccountProfile'
 import {useSession} from '#/state/session'
@@ -93,15 +93,16 @@ export function useSimpleVerificationState({
     [preferences.data?.verificationPrefs],
   )
 
-  const deerVerifications = useDeerTrustedVerificationRecords({
-    uri: profile?.did ?? '',
+  const deerVerifications = useDeerVerificationState({
+    did: profile?.did ?? '',
     enabled: deerVerificationEnabled,
   })
 
-  console.log(deerVerifications.data)
-
   return useMemo(() => {
-    if (!profile || !profile.verification) {
+    const verificationState = deerVerificationEnabled
+      ? deerVerifications.data
+      : profile?.verification
+    if (!profile || !verificationState) {
       return {
         role: 'default',
         isVerified: false,
@@ -109,7 +110,7 @@ export function useSimpleVerificationState({
       }
     }
 
-    const {verifiedStatus, trustedVerifierStatus} = profile.verification
+    const {verifiedStatus, trustedVerifierStatus} = verificationState
     const isVerifiedUser = ['valid', 'invalid'].includes(verifiedStatus)
     const isVerifierUser = ['valid', 'invalid'].includes(trustedVerifierStatus)
     const isVerified =
@@ -121,5 +122,5 @@ export function useSimpleVerificationState({
       isVerified,
       showBadge: prefs.hideBadges ? false : isVerified,
     }
-  }, [profile, prefs])
+  }, [profile, prefs, deerVerificationEnabled, deerVerifications])
 }

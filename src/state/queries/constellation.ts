@@ -1,4 +1,4 @@
-type ConstellationLink = {
+export type ConstellationLink = {
   did: string
   collection: string
   rkey: string
@@ -147,4 +147,9 @@ export async function asyncGenCollect<V>(
     out.push(v)
   }
   return out
+}
+
+export function dbg<V>(v: V): V {
+  console.log(v)
+  return v
 }
