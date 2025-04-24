@@ -25,7 +25,8 @@ import {
   useSetConstellationInstance,
 } from '#/state/preferences/constellation-instance'
 import {
-  useDeerVerification,
+  useDeerVerificationEnabled,
+  useDeerVerificationTrusted,
   useSetDeerVerificationEnabled,
 } from '#/state/preferences/deer-verification'
 import {
@@ -36,6 +37,7 @@ import {
   useHideFollowNotifications,
   useSetHideFollowNotifications,
 } from '#/state/preferences/hide-follow-notifications'
+import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {
   useNoAppLabelers,
   useSetNoAppLabelers,
@@ -48,7 +50,9 @@ import {
   useRepostCarouselEnabled,
   useSetRepostCarouselEnabled,
 } from '#/state/preferences/repost-carousel-enabled'
+import {useProfilesQuery} from '#/state/queries/profile'
 import {TextInput} from '#/view/com/modals/util'
+import {List} from '#/view/com/util/List'
 import * as SettingsList from '#/screens/Settings/components/SettingsList'
 import {atoms as a} from '#/alf'
 import {Admonition} from '#/components/Admonition'
@@ -65,7 +69,9 @@ import {RaisingHand4Finger_Stroke2_Corner0_Rounded as RaisingHandIcon} from '#/c
 import {Star_Stroke2_Corner0_Rounded as StarIcon} from '#/components/icons/Star'
 import {Verified_Stroke2_Corner2_Rounded as VerifiedIcon} from '#/components/icons/Verified'
 import * as Layout from '#/components/Layout'
+import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
+import {SearchProfileCard} from '../Search/components/SearchProfileCard'
 
 type Props = NativeStackScreenProps<CommonNavigatorParams>
 
@@ -198,6 +204,29 @@ function ConstellationInstanceDialog({
     </Dialog.Outer>
   )
 }
+
+const TrustedVerifiers = (): React.ReactNode => {
+  const trusted = useDeerVerificationTrusted()
+  const moderationOpts = useModerationOpts()
+
+  const results = useProfilesQuery({
+    handles: Array.from(trusted),
+  })
+
+  return results.data && moderationOpts !== undefined ? (
+    <List
+      data={results.data.profiles}
+      renderItem={({item}) => (
+        <SearchProfileCard profile={item} moderationOpts={moderationOpts} />
+      )}
+      keyExtractor={item => item.did}
+      // contentContainerStyle={{paddingBottom: 100}}
+    />
+  ) : (
+    <Loader />
+  )
+}
+
 export function DeerSettingsScreen({}: Props) {
   const {_} = useLingui()
 
@@ -225,7 +254,7 @@ export function DeerSettingsScreen({}: Props) {
   const constellationInstance = useConstellationInstance()
   const setConstellationInstanceControl = Dialog.useDialogControl()
 
-  const deerVerification = useDeerVerification()
+  const deerVerificationEnabled = useDeerVerificationEnabled()
   const setDeerVerificationEnabled = useSetDeerVerificationEnabled()
 
   const repostCarouselEnabled = useRepostCarouselEnabled()
@@ -321,7 +350,7 @@ export function DeerSettingsScreen({}: Props) {
               label={_(
                 msg`Select your own set of trusted verifiers, and operate as a verifier`,
               )}
-              value={deerVerification.enabled}
+              value={deerVerificationEnabled}
               onChange={value => setDeerVerificationEnabled(value)}
               style={[a.w_full]}>
               <Toggle.LabelText style={[a.flex_1]}>
@@ -333,6 +362,21 @@ export function DeerSettingsScreen({}: Props) {
               <Toggle.Platform />
             </Toggle.Item>
           </SettingsList.Group>
+
+          <SettingsList.Item>
+            <Admonition type="warning" style={[a.flex_1]}>
+              <Trans>
+                WIP. May slow down the client or fail to find all labels. Revoke
+                and grant trust in the meatball menu on a profile.{' '}
+                {deerVerificationEnabled
+                  ? 'You currently'
+                  : 'If enabled, you would'}{' '}
+                trust the following verifiers:
+              </Trans>
+            </Admonition>
+          </SettingsList.Item>
+
+          <TrustedVerifiers />
 
           <SettingsList.Item>
             <SettingsList.ItemIcon icon={StarIcon} />
