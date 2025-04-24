@@ -1,5 +1,7 @@
 import {useMemo} from 'react'
 
+import {useDeerVerificationEnabled} from '#/state/preferences/deer-verification'
+import {useDeerTrustedVerificationRecords} from '#/state/queries/deer-verification'
 import {usePreferencesQuery} from '#/state/queries/preferences'
 import {useCurrentAccountProfile} from '#/state/queries/useCurrentAccountProfile'
 import {useSession} from '#/state/session'
@@ -83,11 +85,21 @@ export function useSimpleVerificationState({
 }: {
   profile?: bsky.profile.AnyProfileView
 }): SimpleVerificationState {
+  const deerVerificationEnabled = useDeerVerificationEnabled()
+
   const preferences = usePreferencesQuery()
   const prefs = useMemo(
     () => preferences.data?.verificationPrefs || {hideBadges: false},
     [preferences.data?.verificationPrefs],
   )
+
+  const deerVerifications = useDeerTrustedVerificationRecords({
+    uri: profile?.did ?? '',
+    enabled: deerVerificationEnabled,
+  })
+
+  console.log(deerVerifications.data)
+
   return useMemo(() => {
     if (!profile || !profile.verification) {
       return {

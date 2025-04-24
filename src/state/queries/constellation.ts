@@ -107,15 +107,15 @@ export async function* asyncGenMap<K, V>(
   }
 }
 
-export function asyncGenFilter<K>(
-  gen: AsyncGenerator<K, void, unknown>,
-  predicate: (item: K) => boolean,
-): AsyncGenerator<Awaited<K>, void, unknown>
-
 export function asyncGenFilter<K, V extends K>(
   gen: AsyncGenerator<K, void, unknown>,
   predicate: (item: K) => item is V,
 ): AsyncGenerator<Awaited<V>, void, unknown>
+
+export function asyncGenFilter<K>(
+  gen: AsyncGenerator<K, void, unknown>,
+  predicate: (item: K) => boolean,
+): AsyncGenerator<Awaited<K>, void, unknown>
 
 export async function* asyncGenFilter<K>(
   gen: AsyncGenerator<K, void, unknown>,

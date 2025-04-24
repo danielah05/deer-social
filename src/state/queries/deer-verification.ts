@@ -1,13 +1,9 @@
-import {
-  type AppBskyGraphVerification,
-  AtUri,
-  type BskyAgent,
-} from '@atproto/api'
+import {AppBskyGraphVerification, AtUri, type BskyAgent} from '@atproto/api'
 import {useQuery} from '@tanstack/react-query'
 
-import {retry} from '#/lib/async/retry'
 import {STALE} from '#/state/queries'
 import {useAgent} from '#/state/session'
+import * as bsky from '#/types/bsky'
 import {useConstellationInstance} from '../preferences/constellation-instance'
 import {useDeerVerificationTrustedSet} from '../preferences/deer-verification'
 import {
@@ -49,31 +45,34 @@ async function requestDeerTrustedVerifications(
       100,
     )
 
-    const verifications = asyncGenMap(
-      asyncGenFilter(verificationLinks, link => trusted.has(link.did)),
-      link =>
-        retry(
-          2,
-          e => {
-            // i have ZERO idea if this is reasonable, i saw it somewhere else
-            // but that was a record fetch, where as this has a client method. dunno
-            // TODO: is this reasonable?
-            if (e.message.includes(`Could not locate record:`)) {
-              return false
-            }
-            return true
-          },
-          () =>
-            agent.app.bsky.graph.verification.get({
-              repo: link.did,
-              rkey: link.rkey,
-            }),
+    const verifications = asyncGenFilter(
+      asyncGenMap(
+        asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
+        async ({did, rkey}) => {
+          const docUrl = did.startsWith('did:plc:')
+            ? `https://plc.directory/${did}`
+            : `https://${did.substring(8)}/.well-known/did.json`
+
+          // TODO: validate!
+          const doc = await (await fetch(docUrl)).json()
+          const service: string = doc.service.find(
+            s => s.type === 'AtprotoPersonalDataServer',
+          )?.serviceEndpoint
+          const request = `${service}/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.graph.verification&rkey=${rkey}`
+          const record = await (await fetch(request)).json()
+
+          return record.value
+        },
+      ),
+      r =>
+        bsky.validate<AppBskyGraphVerification.Record>(
+          r,
+          AppBskyGraphVerification.validateRecord,
         ),
     )
-    // we could be checking the uri and cid? the appview could lie (sholud we just be direct fetching here?)
 
     // Array.fromAsync will do this but not available everywhere yet
-    return asyncGenCollect(asyncGenMap(verifications, r => r.value))
+    return asyncGenCollect(verifications)
   } catch (e) {
     console.error(e)
     return undefined
