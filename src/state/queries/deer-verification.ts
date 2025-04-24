@@ -27,7 +27,11 @@ import {
 import {useCurrentAccountProfile} from './useCurrentAccountProfile'
 
 const RQKEY_ROOT = 'deer-verification'
-export const RQKEY = (did: string) => [RQKEY_ROOT, did]
+export const RQKEY = (did: string, trusted: Set<string>) => [
+  RQKEY_ROOT,
+  did,
+  Array.from(trusted).sort(),
+]
 
 async function requestDeerVerificationViews(
   agent: BskyAgent,
@@ -151,7 +155,7 @@ export function useDeerVerificationState({
 
   return useQuery<VerificationState | undefined>({
     staleTime: STALE.HOURS.ONE,
-    queryKey: RQKEY(profile?.did || ''),
+    queryKey: RQKEY(profile?.did || '', trusted),
     async queryFn() {
       if (!profile) return undefined
 
