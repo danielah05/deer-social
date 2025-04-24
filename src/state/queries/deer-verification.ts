@@ -181,9 +181,28 @@ export function useDeerVerificationProfileOverlay<V extends AnyProfileView>(
   })
 
   return enabled
-    ? profile
-    : {
+    ? {
         ...profile,
         verification: verificationState.data,
       }
+    : profile
+}
+
+export function useMaybeDeerVerificationProfileOverlay<
+  V extends AnyProfileView,
+>(profile: V | undefined): V | undefined {
+  const enabled = useDeerVerificationEnabled()
+  const verificationState = useDeerVerificationState({
+    profile,
+    enabled,
+  })
+
+  if (!profile) return undefined
+
+  return enabled
+    ? {
+        ...profile,
+        verification: verificationState.data,
+      }
+    : profile
 }

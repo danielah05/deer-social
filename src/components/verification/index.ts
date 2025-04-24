@@ -1,5 +1,6 @@
 import {useMemo} from 'react'
 
+import {useMaybeDeerVerificationProfileOverlay} from '#/state/queries/deer-verification'
 import {usePreferencesQuery} from '#/state/queries/preferences'
 import {useCurrentAccountProfile} from '#/state/queries/useCurrentAccountProfile'
 import {useSession} from '#/state/session'
@@ -79,7 +80,7 @@ export type SimpleVerificationState = {
 }
 
 export function useSimpleVerificationState({
-  profile,
+  profile: baseProfile,
 }: {
   profile?: bsky.profile.AnyProfileView
 }): SimpleVerificationState {
@@ -88,6 +89,7 @@ export function useSimpleVerificationState({
     () => preferences.data?.verificationPrefs || {hideBadges: false},
     [preferences.data?.verificationPrefs],
   )
+  const profile = useMaybeDeerVerificationProfileOverlay(baseProfile)
 
   return useMemo(() => {
     if (!profile || !profile.verification) {
