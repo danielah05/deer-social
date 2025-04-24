@@ -110,6 +110,32 @@ async function requestDeerVerificationViews(
   }
 }
 
+function createVerificationState(
+  verifications: VerificationView[],
+  profile: AnyProfileView,
+  trusted: Set<string>,
+) {
+  return {
+    verifications,
+    verifiedStatus:
+      verifications.length > 0 && verifications.findIndex(v => v.isValid) !== -1
+        ? 'valid'
+        : 'none',
+    trustedVerifierStatus: trusted.has(profile.did) ? 'valid' : 'none',
+  }
+}
+
+function useDeerVerifierCtx() {
+  const qc = useQueryClient()
+  const agent = useAgent()
+  const instance = useConstellationInstance()
+  const currentAccountProfile = useCurrentAccountProfile()
+  const trusted = new Set(useDeerVerification().trusted)
+  if (currentAccountProfile) trusted.add(currentAccountProfile.did)
+
+  return {qc, agent, instance, trusted}
+}
+
 export function useDeerVerificationState({
   profile,
   enabled,
@@ -117,14 +143,9 @@ export function useDeerVerificationState({
   profile: AnyProfileView | undefined
   enabled?: boolean
 }) {
-  const qc = useQueryClient()
-  const agent = useAgent()
-  const instance = useConstellationInstance()
-  const currentAccountProfile = useCurrentAccountProfile()
-  const trusted = new Set(useDeerVerification().trusted)
-  if (currentAccountProfile) trusted.add(currentAccountProfile.did)
+  const {qc, agent, instance, trusted} = useDeerVerifierCtx()
+
   return useQuery<VerificationState | undefined>({
-    // TODO: is this too high lol
     staleTime: STALE.MINUTES.FIVE,
     queryKey: RQKEY(profile?.did || ''),
     async queryFn() {
@@ -137,14 +158,11 @@ export function useDeerVerificationState({
         trusted,
       )
       if (verifications === undefined) return
-      const verificationState = {
+      const verificationState = createVerificationState(
         verifications,
-        verifiedStatus: verifications.length > 0 ? 'valid' : 'none',
-        trustedVerifierStatus:
-          currentAccountProfile?.did === profile.did || trusted.has(profile.did)
-            ? 'valid'
-            : 'none',
-      } satisfies VerificationState
+        profile,
+        trusted,
+      )
 
       updateProfileShadow(qc, profile.did, {verification: verificationState})
 
