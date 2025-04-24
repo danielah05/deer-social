@@ -17,6 +17,7 @@ import {
 import {
   asUri,
   asyncGenCollect,
+  asyncGenDedupe,
   asyncGenFilter,
   asyncGenMap,
   asyncGenTake,
@@ -58,7 +59,10 @@ async function requestDeerVerificationViews(
 
     const verifications = asyncGenFilter(
       asyncGenMap(
-        asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
+        asyncGenDedupe(
+          asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
+          ({did}) => did,
+        ),
         async link => {
           const {did, rkey} = link
           const docUrl = did.startsWith('did:plc:')

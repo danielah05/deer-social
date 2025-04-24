@@ -139,6 +139,20 @@ export async function* asyncGenTake<V>(
   }
 }
 
+export async function* asyncGenDedupe<V, K>(
+  gen: AsyncGenerator<V, void, unknown>,
+  keyFn: (_: V) => K,
+) {
+  const seen = new Set<K>()
+  for await (const v of gen) {
+    const key = keyFn(v)
+    if (!seen.has(key)) {
+      seen.add(key)
+      yield v
+    }
+  }
+}
+
 export async function asyncGenCollect<V>(
   gen: AsyncGenerator<V, void, unknown>,
 ) {
