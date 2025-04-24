@@ -3,15 +3,17 @@ import {
   type VerificationState,
   type VerificationView,
 } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
-import {useQuery, useQueryClient} from '@tanstack/react-query'
+import {useQuery} from '@tanstack/react-query'
 
 import {STALE} from '#/state/queries'
 import {useAgent} from '#/state/session'
 import * as bsky from '#/types/bsky'
 import {type AnyProfileView} from '#/types/bsky/profile'
-import {updateProfileShadow} from '../cache/profile-shadow'
 import {useConstellationInstance} from '../preferences/constellation-instance'
-import {useDeerVerification} from '../preferences/deer-verification'
+import {
+  useDeerVerification,
+  useDeerVerificationEnabled,
+} from '../preferences/deer-verification'
 import {
   asUri,
   asyncGenCollect,
@@ -126,14 +128,13 @@ function createVerificationState(
 }
 
 function useDeerVerifierCtx() {
-  const qc = useQueryClient()
   const agent = useAgent()
   const instance = useConstellationInstance()
   const currentAccountProfile = useCurrentAccountProfile()
   const trusted = new Set(useDeerVerification().trusted)
   if (currentAccountProfile) trusted.add(currentAccountProfile.did)
 
-  return {qc, agent, instance, trusted}
+  return {agent, instance, trusted}
 }
 
 export function useDeerVerificationState({
@@ -143,10 +144,10 @@ export function useDeerVerificationState({
   profile: AnyProfileView | undefined
   enabled?: boolean
 }) {
-  const {qc, agent, instance, trusted} = useDeerVerifierCtx()
+  const {agent, instance, trusted} = useDeerVerifierCtx()
 
   return useQuery<VerificationState | undefined>({
-    staleTime: STALE.MINUTES.FIVE,
+    staleTime: STALE.HOURS.ONE,
     queryKey: RQKEY(profile?.did || ''),
     async queryFn() {
       if (!profile) return undefined
@@ -164,10 +165,25 @@ export function useDeerVerificationState({
         trusted,
       )
 
-      updateProfileShadow(qc, profile.did, {verification: verificationState})
-
       return verificationState
     },
     enabled: enabled && profile !== undefined,
   })
+}
+
+export function useDeerVerificationProfileOverlay<V extends AnyProfileView>(
+  profile: V,
+): V {
+  const enabled = useDeerVerificationEnabled()
+  const verificationState = useDeerVerificationState({
+    profile,
+    enabled,
+  })
+
+  return enabled
+    ? profile
+    : {
+        ...profile,
+        verification: verificationState.data,
+      }
 }
