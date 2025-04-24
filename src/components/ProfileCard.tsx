@@ -13,7 +13,6 @@ import {type LogEvents} from '#/lib/statsig/statsig'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {useProfileShadow} from '#/state/cache/profile-shadow'
-import {useDeerVerificationProfileOverlay} from '#/state/queries/deer-verification'
 import {useProfileFollowMutationQueue} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
 import * as Toast from '#/view/com/util/Toast'
@@ -169,11 +168,10 @@ export function NameAndHandle({
   profile: bsky.profile.AnyProfileView
   moderationOpts: ModerationOpts
 }) {
-  const overlayedProfile = useDeerVerificationProfileOverlay(profile)
   return (
     <View style={[a.flex_1]}>
-      <Name profile={overlayedProfile} moderationOpts={moderationOpts} />
-      <Handle profile={overlayedProfile} />
+      <Name profile={profile} moderationOpts={moderationOpts} />
+      <Handle profile={profile} />
     </View>
   )
 }
