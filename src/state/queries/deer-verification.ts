@@ -1,20 +1,17 @@
-import {
-  AppBskyGraphVerification,
-  type AppBskyGraphVerificationRecord,
-  AtUri,
-  type BskyAgent,
-} from '@atproto/api'
+import {AppBskyGraphVerification, AtUri, type BskyAgent} from '@atproto/api'
 import {
   type VerificationState,
   type VerificationView,
 } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
-import {useQuery} from '@tanstack/react-query'
+import {useQuery, useQueryClient} from '@tanstack/react-query'
 
 import {STALE} from '#/state/queries'
 import {useAgent} from '#/state/session'
 import * as bsky from '#/types/bsky'
+import {type AnyProfileView} from '#/types/bsky/profile'
+import {updateProfileShadow} from '../cache/profile-shadow'
 import {useConstellationInstance} from '../preferences/constellation-instance'
-import {useDeerVerificationTrustedSet} from '../preferences/deer-verification'
+import {useDeerVerification} from '../preferences/deer-verification'
 import {
   asUri,
   asyncGenCollect,
@@ -32,10 +29,10 @@ export const RQKEY = (did: string) => [RQKEY_ROOT, did]
 async function requestDeerVerificationViews(
   agent: BskyAgent,
   instance: string,
-  uri: string,
+  profile: AnyProfileView,
   trusted: Set<string>,
 ): Promise<VerificationView[] | undefined> {
-  const urip = new AtUri(uri)
+  const urip = new AtUri(profile.did)
 
   if (!urip.host.startsWith('did:')) {
     const res = await agent.resolveHandle({
@@ -68,7 +65,7 @@ async function requestDeerVerificationViews(
 
           // TODO: validate!
           const doc = await (await fetch(docUrl)).json()
-          const service: string = doc.service.find(
+          const service: string | undefined = doc.service.find(
             s => s.type === 'AtprotoPersonalDataServer',
           )?.serviceEndpoint
           const request = `${service}/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.graph.verification&rkey=${rkey}`
@@ -79,11 +76,12 @@ async function requestDeerVerificationViews(
         },
       ),
       // the explicit return type shouldn't be needed...
-      (
-        d,
-      ): d is {
+      (d: {
         link: ConstellationLink
-        record: AppBskyGraphVerificationRecord
+        record: unknown
+      }): d is {
+        link: ConstellationLink
+        record: AppBskyGraphVerification.Record
       } =>
         bsky.validate<AppBskyGraphVerification.Record>(
           d.record,
@@ -93,11 +91,13 @@ async function requestDeerVerificationViews(
 
     const verificationViews = asyncGenMap(
       verifications,
-      ({link}) =>
+      ({link, record}) =>
         ({
           issuer: link.did,
-          isValid: true,
-          createdAt: new Date().toISOString(),
+          isValid:
+            profile.displayName === record.displayName &&
+            profile.handle === record.handle,
+          createdAt: record.createdAt,
           uri: asUri(link),
         } satisfies VerificationView),
     )
@@ -111,38 +111,45 @@ async function requestDeerVerificationViews(
 }
 
 export function useDeerVerificationState({
-  did,
+  profile,
   enabled,
 }: {
-  did: string
+  profile: AnyProfileView | undefined
   enabled?: boolean
 }) {
+  const qc = useQueryClient()
   const agent = useAgent()
   const instance = useConstellationInstance()
-  const trusted = useDeerVerificationTrustedSet()
   const currentAccountProfile = useCurrentAccountProfile()
+  const trusted = new Set(useDeerVerification().trusted)
+  if (currentAccountProfile) trusted.add(currentAccountProfile.did)
   return useQuery<VerificationState | undefined>({
     // TODO: is this too high lol
-    staleTime: STALE.SECONDS.FIFTEEN,
-    queryKey: RQKEY(did || ''),
+    staleTime: STALE.MINUTES.FIVE,
+    queryKey: RQKEY(profile?.did || ''),
     async queryFn() {
+      if (!profile) return undefined
+
       const verifications = await requestDeerVerificationViews(
         agent,
         instance,
-        did,
+        profile,
         trusted,
       )
       if (verifications === undefined) return
-      if (verifications.length > 0) console.log(verifications)
-      return {
+      const verificationState = {
         verifications,
         verifiedStatus: verifications.length > 0 ? 'valid' : 'none',
         trustedVerifierStatus:
-          currentAccountProfile?.did === did || trusted.has(did)
+          currentAccountProfile?.did === profile.did || trusted.has(profile.did)
             ? 'valid'
             : 'none',
       } satisfies VerificationState
+
+      updateProfileShadow(qc, profile.did, {verification: verificationState})
+
+      return verificationState
     },
-    enabled: enabled && !!did,
+    enabled: enabled && profile !== undefined,
   })
 }

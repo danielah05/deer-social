@@ -94,7 +94,7 @@ export function useSimpleVerificationState({
   )
 
   const deerVerifications = useDeerVerificationState({
-    did: profile?.did ?? '',
+    profile,
     enabled: deerVerificationEnabled,
   })
 

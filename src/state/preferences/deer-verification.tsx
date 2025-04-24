@@ -46,10 +46,6 @@ export function useDeerVerificationEnabled() {
   return useDeerVerification().enabled
 }
 
-export function useDeerVerificationTrustedSet() {
-  return new Set(useDeerVerification().trusted)
-}
-
 export function useSetDeerVerification() {
   return React.useContext(setContext)
 }
