@@ -46,6 +46,16 @@ export function useDeerVerificationEnabled() {
   return useDeerVerification().enabled
 }
 
+export function useDeerVerificationTrusted(
+  mandatory: string | undefined = undefined,
+) {
+  const trusted = new Set(useDeerVerification().trusted)
+  if (mandatory) {
+    trusted.add(mandatory)
+  }
+  return trusted
+}
+
 export function useSetDeerVerification() {
   return React.useContext(setContext)
 }
@@ -57,6 +67,27 @@ export function useSetDeerVerificationEnabled() {
   return React.useMemo(
     () => (enabled: boolean) =>
       setDeerVerification({...deerVerification, enabled}),
+    [deerVerification, setDeerVerification],
+  )
+}
+
+export function useSetDeerVerificationTrust() {
+  const deerVerification = useDeerVerification()
+  const setDeerVerification = useSetDeerVerification()
+
+  return React.useMemo(
+    () => ({
+      add: (add: string) => {
+        const trusted = new Set(deerVerification.trusted)
+        trusted.add(add)
+        setDeerVerification({...deerVerification, trusted: Array.from(trusted)})
+      },
+      remove: (remove: string) => {
+        const trusted = new Set(deerVerification.trusted)
+        trusted.delete(remove)
+        setDeerVerification({...deerVerification, trusted: Array.from(trusted)})
+      },
+    }),
     [deerVerification, setDeerVerification],
   )
 }

@@ -7,6 +7,7 @@ import {urls} from '#/lib/constants'
 import {getUserDisplayName} from '#/lib/getUserDisplayName'
 import {NON_BREAKING_SPACE} from '#/lib/strings/constants'
 import {logger} from '#/logger'
+import {useDeerVerificationEnabled} from '#/state/preferences/deer-verification'
 import {useSession} from '#/state/session'
 import {atoms as a, useBreakpoints, useTheme} from '#/alf'
 import {Button, ButtonText} from '#/components/Button'
@@ -59,6 +60,8 @@ function Inner({
     ? _(msg`You are a trusted verifier`)
     : _(msg`${userName} is a trusted verifier`)
 
+  const deerVerificationEnabled = useDeerVerificationEnabled()
+
   return (
     <Dialog.ScrollableInner
       label={label}
@@ -68,27 +71,29 @@ function Inner({
       <Dialog.Handle />
 
       <View style={[a.gap_lg]}>
-        <View
-          style={[
-            a.w_full,
-            a.rounded_md,
-            a.overflow_hidden,
-            t.atoms.bg_contrast_25,
-            {minHeight: 100},
-          ]}>
-          <Image
-            accessibilityIgnoresInvertColors
-            source={require('../../../assets/images/initial_verification_announcement_1.png')}
+        {!deerVerificationEnabled && (
+          <View
             style={[
-              {
-                aspectRatio: 353 / 160,
-              },
-            ]}
-            alt={_(
-              msg`An illustration showing that Bluesky selects trusted verifiers, and trusted verifiers in turn verify individual user accounts.`,
-            )}
-          />
-        </View>
+              a.w_full,
+              a.rounded_md,
+              a.overflow_hidden,
+              t.atoms.bg_contrast_25,
+              {minHeight: 100},
+            ]}>
+            <Image
+              accessibilityIgnoresInvertColors
+              source={require('../../../assets/images/initial_verification_announcement_1.png')}
+              style={[
+                {
+                  aspectRatio: 353 / 160,
+                },
+              ]}
+              alt={_(
+                msg`An illustration showing that Bluesky selects trusted verifiers, and trusted verifiers in turn verify individual user accounts.`,
+              )}
+            />
+          </View>
+        )}
 
         <View style={[a.gap_sm]}>
           <Text style={[a.text_2xl, a.font_bold, a.pr_4xl, a.leading_tight]}>
@@ -102,8 +107,8 @@ function Inner({
                 <VerifierCheck width={14} />
                 {NON_BREAKING_SPACE}
               </RNText>
-              can verify others. These trusted verifiers are selected by
-              Bluesky.
+              can verify others. These trusted verifiers are selected by{' '}
+              {deerVerificationEnabled ? 'you' : 'Bluesky'}.
             </Trans>
           </Text>
         </View>

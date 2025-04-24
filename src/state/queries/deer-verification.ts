@@ -11,8 +11,8 @@ import * as bsky from '#/types/bsky'
 import {type AnyProfileView} from '#/types/bsky/profile'
 import {useConstellationInstance} from '../preferences/constellation-instance'
 import {
-  useDeerVerification,
   useDeerVerificationEnabled,
+  useDeerVerificationTrusted,
 } from '../preferences/deer-verification'
 import {
   asUri,
@@ -131,8 +131,7 @@ function useDeerVerifierCtx() {
   const agent = useAgent()
   const instance = useConstellationInstance()
   const currentAccountProfile = useCurrentAccountProfile()
-  const trusted = new Set(useDeerVerification().trusted)
-  if (currentAccountProfile) trusted.add(currentAccountProfile.did)
+  const trusted = useDeerVerificationTrusted(currentAccountProfile?.did)
 
   return {agent, instance, trusted}
 }
