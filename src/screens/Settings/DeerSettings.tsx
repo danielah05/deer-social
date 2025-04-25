@@ -69,7 +69,6 @@ import {RaisingHand4Finger_Stroke2_Corner0_Rounded as RaisingHandIcon} from '#/c
 import {Star_Stroke2_Corner0_Rounded as StarIcon} from '#/components/icons/Star'
 import {Verified_Stroke2_Corner2_Rounded as VerifiedIcon} from '#/components/icons/Verified'
 import * as Layout from '#/components/Layout'
-import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
 import {SearchProfileCard} from '../Search/components/SearchProfileCard'
 
@@ -213,17 +212,18 @@ const TrustedVerifiers = (): React.ReactNode => {
     handles: Array.from(trusted),
   })
 
-  return results.data && moderationOpts !== undefined ? (
-    <List
-      data={results.data.profiles}
-      renderItem={({item}) => (
-        <SearchProfileCard profile={item} moderationOpts={moderationOpts} />
-      )}
-      keyExtractor={item => item.did}
-      // contentContainerStyle={{paddingBottom: 100}}
-    />
-  ) : (
-    <Loader />
+  return (
+    results.data &&
+    moderationOpts !== undefined && (
+      <List
+        data={results.data.profiles}
+        renderItem={({item}) => (
+          <SearchProfileCard profile={item} moderationOpts={moderationOpts} />
+        )}
+        keyExtractor={item => item.did}
+        contentContainerStyle={[a.pl_xl, a.pb_sm]}
+      />
+    )
   )
 }
 
