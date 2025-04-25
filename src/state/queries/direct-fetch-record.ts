@@ -125,7 +125,7 @@ export async function directFetchPostRecord(
 export class LRU<K, V> {
   max: number
   private cache: Map<K, Promise<V>>
-  constructor(max = 1_000) {
+  constructor(max = 1_024) {
     this.max = max
     this.cache = new Map()
   }
