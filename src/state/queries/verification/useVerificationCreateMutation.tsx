@@ -50,7 +50,6 @@ export function useVerificationCreateMutation() {
           10,
           2e3,
           (link: ConstellationLink | undefined) => {
-            console.log(link)
             return link !== undefined
           },
           () => {
