@@ -146,7 +146,7 @@ function createVerificationViews(
   return linkedRecords.map(({link, record}) => ({
     issuer: link.did,
     isValid:
-      profile.displayName === record.displayName &&
+      (profile.displayName ?? '') === record.displayName &&
       profile.handle === record.handle,
     createdAt: record.createdAt,
     uri: asUri(link),
