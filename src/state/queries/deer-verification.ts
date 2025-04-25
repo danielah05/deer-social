@@ -18,7 +18,6 @@ import {
   asyncGenCollect,
   asyncGenDedupe,
   asyncGenFilter,
-  asyncGenTake,
   asyncGenTryMap,
   type ConstellationLink,
   constellationLinks,
@@ -49,17 +48,12 @@ export function getTrustedConstellationVerifications(
   trusted: Set<string>,
 ) {
   const urip = new AtUri(did)
-  const verificationLinks = asyncGenTake(
-    constellationLinks(instance, {
-      target: urip.host,
-      collection: 'app.bsky.graph.verification',
-      path: '.subject',
-      // TODO: remove this when constellation supports filtering
-      // without a max here, a malicious user could create thousands of verification records and hang a client
-      // since we can't filter to only trusted verifiers before searching for backlinks yet
-    }),
-    100,
-  )
+  const verificationLinks = constellationLinks(instance, {
+    target: urip.host,
+    collection: 'app.bsky.graph.verification',
+    path: '.subject',
+    from_dids: Array.from(trusted),
+  })
   return asyncGenDedupe(
     asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
     ({did}) => did,

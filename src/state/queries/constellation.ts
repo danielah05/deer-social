@@ -28,12 +28,17 @@ const headers = new Headers({
 const makeReqUrl = (
   instance: string,
   route: string,
-  params: Record<string, string>,
+  params: Record<string, string | string[]>,
 ) => {
   const url = new URL(instance)
   url.pathname = route
   for (const [k, v] of Object.entries(params)) {
-    url.searchParams.set(k, v)
+    // NOTE: in the future this should probably be a repeated param...
+    if (Array.isArray(v)) {
+      url.searchParams.set(k, v.join(','))
+    } else {
+      url.searchParams.set(k, v)
+    }
   }
   return url
 }
@@ -46,6 +51,7 @@ export async function* constellationLinks(
     target: string
     collection: Collection
     path: string
+    from_dids?: string[]
   },
 ) {
   const url = makeReqUrl(instance, 'links', params)
