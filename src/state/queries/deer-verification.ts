@@ -43,32 +43,44 @@ const serviceCache = new LRU<`did:${string}`, string>()
 
 const verificationCache = new LRU<string, any>()
 
-async function fetchDeerVerificationLinkedRecords(
+export function getTrustedConstellationVerifications(
+  instance: string,
+  did: string,
+  trusted: Set<string>,
+) {
+  const urip = new AtUri(did)
+  const verificationLinks = asyncGenTake(
+    constellationLinks(instance, {
+      target: urip.host,
+      collection: 'app.bsky.graph.verification',
+      path: '.subject',
+      // TODO: remove this when constellation supports filtering
+      // without a max here, a malicious user could create thousands of verification records and hang a client
+      // since we can't filter to only trusted verifiers before searching for backlinks yet
+    }),
+    100,
+  )
+  return asyncGenDedupe(
+    asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
+    ({did}) => did,
+  )
+}
+
+async function getDeerVerificationLinkedRecords(
   instance: string,
   did: string,
   trusted: Set<string>,
 ): Promise<LinkedRecord[] | undefined> {
-  const urip = new AtUri(did)
-
   try {
-    const verificationLinks = asyncGenTake(
-      constellationLinks(instance, {
-        target: urip.host,
-        collection: 'app.bsky.graph.verification',
-        path: '.subject',
-        // TODO: remove this when constellation supports filtering
-        // without a max here, a malicious user could create thousands of verification records and hang a client
-        // since we can't filter to only trusted verifiers before searching for backlinks yet
-      }),
-      100,
+    const trustedVerificationLinks = getTrustedConstellationVerifications(
+      instance,
+      did,
+      trusted,
     )
 
     const verificationRecords = asyncGenFilter(
       asyncGenTryMap<ConstellationLink, {link: ConstellationLink; record: any}>(
-        asyncGenDedupe(
-          asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
-          ({did}) => did,
-        ),
+        trustedVerificationLinks,
         // using try map lets us:
         // - cache the service url and verificatin record in independent lrus
         // - clear the promise from the lru on failure
@@ -88,7 +100,6 @@ async function fetchDeerVerificationLinkedRecords(
                 type: string
               }[]
             } = await (await fetch(docUrl)).json()
-            console.log(doc)
             const service = doc.service.find(
               s => s.type === 'AtprotoPersonalDataServer',
             )?.serviceEndpoint
@@ -159,14 +170,6 @@ function createVerificationState(
   }
 }
 
-function useDeerVerifierCtx() {
-  const instance = useConstellationInstance()
-  const currentAccountProfile = useCurrentAccountProfile()
-  const trusted = useDeerVerificationTrusted(currentAccountProfile?.did)
-
-  return {instance, trusted}
-}
-
 export function useDeerVerificationState({
   profile,
   enabled,
@@ -174,7 +177,9 @@ export function useDeerVerificationState({
   profile: AnyProfileView | undefined
   enabled?: boolean
 }) {
-  const {instance, trusted} = useDeerVerifierCtx()
+  const instance = useConstellationInstance()
+  const currentAccountProfile = useCurrentAccountProfile()
+  const trusted = useDeerVerificationTrusted(currentAccountProfile?.did)
 
   const linkedRecords = useQuery<LinkedRecord[] | undefined>({
     staleTime: STALE.HOURS.ONE,
@@ -182,7 +187,7 @@ export function useDeerVerificationState({
     async queryFn() {
       if (!profile) return undefined
 
-      return await fetchDeerVerificationLinkedRecords(
+      return await getDeerVerificationLinkedRecords(
         instance,
         profile.did,
         trusted,

@@ -178,6 +178,16 @@ export async function asyncGenCollect<V>(
   return out
 }
 
+export async function asyncGenFind<V>(
+  gen: AsyncGenerator<V, void, unknown>,
+  predicate: (item: V) => boolean,
+) {
+  for await (const v of gen) {
+    if (predicate(v)) return v
+  }
+  return undefined
+}
+
 export function dbg<V>(v: V): V {
   console.log(v)
   return v
