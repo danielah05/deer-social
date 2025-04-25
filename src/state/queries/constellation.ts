@@ -1,5 +1,5 @@
 export type ConstellationLink = {
-  did: string
+  did: `did:${string}`
   collection: string
   rkey: string
 }
@@ -100,10 +100,25 @@ export function asUri(link: ConstellationLink): string {
 
 export async function* asyncGenMap<K, V>(
   gen: AsyncGenerator<K, void, unknown>,
-  fn: (_: K) => V,
+  fn: (val: K) => V,
 ) {
   for await (const v of gen) {
     yield fn(v)
+  }
+}
+
+export async function* asyncGenTryMap<K, V>(
+  gen: AsyncGenerator<K, void, unknown>,
+  fn: (val: K) => Promise<V>,
+  err: (val: K, e: unknown) => void,
+) {
+  for await (const v of gen) {
+    try {
+      // make sure we resolve inside the try catch
+      yield await fn(v)
+    } catch (e) {
+      err(v, e)
+    }
   }
 }
 

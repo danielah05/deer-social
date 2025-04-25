@@ -18,11 +18,12 @@ import {
   asyncGenCollect,
   asyncGenDedupe,
   asyncGenFilter,
-  asyncGenMap,
   asyncGenTake,
+  asyncGenTryMap,
   type ConstellationLink,
   constellationLinks,
 } from './constellation'
+import {LRU} from './direct-fetch-record'
 import {useCurrentAccountProfile} from './useCurrentAccountProfile'
 
 const RQKEY_ROOT = 'deer-verification'
@@ -36,6 +37,9 @@ type LinkedRecord = {
   link: ConstellationLink
   record: AppBskyGraphVerification.Record
 }
+
+// TODO: lift this into direct fetch to share cache
+const serviceCache = new LRU<`did:${string}`, string>()
 
 async function fetchDeerVerificationLinkedRecords(
   instance: string,
@@ -58,27 +62,46 @@ async function fetchDeerVerificationLinkedRecords(
     )
 
     const verificationRecords = asyncGenFilter(
-      asyncGenMap(
+      asyncGenTryMap<ConstellationLink, {link: ConstellationLink; record: any}>(
         asyncGenDedupe(
           asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
           ({did}) => did,
         ),
         async link => {
           const {did, rkey} = link
-          const docUrl = did.startsWith('did:plc:')
-            ? `https://plc.directory/${did}`
-            : `https://${did.substring(8)}/.well-known/did.json`
 
-          // TODO: validate!
-          const doc = await (await fetch(docUrl)).json()
-          const service: string | undefined = doc.service.find(
-            s => s.type === 'AtprotoPersonalDataServer',
-          )?.serviceEndpoint
+          const service = await serviceCache.getOrInsertWith(did, async () => {
+            const docUrl = did.startsWith('did:plc:')
+              ? `https://plc.directory/${did}`
+              : `https://${did.substring(8)}/.well-known/did.json`
+
+            // TODO: validate!
+            const doc: {
+              service: {
+                serviceEndpoint: string
+                type: string
+              }[]
+            } = await (await fetch(docUrl)).json()
+            console.log(doc)
+            const service = doc.service.find(
+              s => s.type === 'AtprotoPersonalDataServer',
+            )?.serviceEndpoint
+            // NOTE: this throw will bubble and skip the link
+            if (service === undefined)
+              throw new Error(`couldn't find a service for ${did}`)
+            return service
+          })
+
           const request = `${service}/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.graph.verification&rkey=${rkey}`
           const resp = await (await fetch(request)).json()
           // TODO: assert uri, cid match and compare with computed?
           const record = resp.value
           return {link, record}
+        },
+        (link, e) => {
+          // NOTE: we catch the bubbled error here! don't keep the error in the cache
+          console.error(e)
+          serviceCache.delete(link.did)
         },
       ),
       // the explicit return type shouldn't be needed...
