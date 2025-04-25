@@ -19,7 +19,7 @@ export function ProfileHeaderDisplayName({
   const {gtMobile} = useBreakpoints()
 
   return (
-    <View pointerEvents="none">
+    <View>
       <Text
         emoji
         testID="profileHeaderDisplayName"
