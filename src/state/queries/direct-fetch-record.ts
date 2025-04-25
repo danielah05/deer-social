@@ -165,4 +165,19 @@ export class LRU<K, V> {
     this.set(key, promise)
     return promise
   }
+
+  // try to insert, but remove from cache on error and bubble
+  async getOrTryInsertWith(key: K, fn: () => Promise<V>): Promise<V> {
+    const val = this.get(key)
+    if (val !== undefined) return val
+
+    const promise = fn()
+    this.set(key, promise)
+    try {
+      return await promise
+    } catch (e) {
+      this.delete(key)
+      throw e
+    }
+  }
 }

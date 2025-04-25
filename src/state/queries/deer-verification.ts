@@ -41,6 +41,8 @@ type LinkedRecord = {
 // TODO: lift this into direct fetch to share cache
 const serviceCache = new LRU<`did:${string}`, string>()
 
+const verificationCache = new LRU<string, any>()
+
 async function fetchDeerVerificationLinkedRecords(
   instance: string,
   did: string,
@@ -67,10 +69,14 @@ async function fetchDeerVerificationLinkedRecords(
           asyncGenFilter(verificationLinks, ({did}) => trusted.has(did)),
           ({did}) => did,
         ),
+        // using try map lets us:
+        // - cache the service url and verificatin record in independent lrus
+        // - clear the promise from the lru on failure
+        // - skip links that cause errors
         async link => {
           const {did, rkey} = link
 
-          const service = await serviceCache.getOrInsertWith(did, async () => {
+          let service = await serviceCache.getOrTryInsertWith(did, async () => {
             const docUrl = did.startsWith('did:plc:')
               ? `https://plc.directory/${did}`
               : `https://${did.substring(8)}/.well-known/did.json`
@@ -86,22 +92,24 @@ async function fetchDeerVerificationLinkedRecords(
             const service = doc.service.find(
               s => s.type === 'AtprotoPersonalDataServer',
             )?.serviceEndpoint
-            // NOTE: this throw will bubble and skip the link
+
             if (service === undefined)
-              throw new Error(`couldn't find a service for ${did}`)
+              throw new Error(`could not find a service for ${did}`)
             return service
           })
 
           const request = `${service}/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.graph.verification&rkey=${rkey}`
-          const resp = await (await fetch(request)).json()
-          // TODO: assert uri, cid match and compare with computed?
-          const record = resp.value
+          const record = await verificationCache.getOrTryInsertWith(
+            request,
+            async () => {
+              const resp = await (await fetch(request)).json()
+              return resp.value
+            },
+          )
           return {link, record}
         },
-        (link, e) => {
-          // NOTE: we catch the bubbled error here! don't keep the error in the cache
+        (_, e) => {
           console.error(e)
-          serviceCache.delete(link.did)
         },
       ),
       // the explicit return type shouldn't be needed...
