@@ -1,4 +1,4 @@
-import {AppBskyGraphVerification, AtUri, type BskyAgent} from '@atproto/api'
+import {AppBskyGraphVerification, AtUri} from '@atproto/api'
 import {
   type VerificationState,
   type VerificationView,
@@ -6,7 +6,6 @@ import {
 import {useQuery} from '@tanstack/react-query'
 
 import {STALE} from '#/state/queries'
-import {useAgent} from '#/state/session'
 import * as bsky from '#/types/bsky'
 import {type AnyProfileView} from '#/types/bsky/profile'
 import {useConstellationInstance} from '../preferences/constellation-instance'
@@ -39,19 +38,11 @@ type LinkedRecord = {
 }
 
 async function fetchDeerVerificationLinkedRecords(
-  agent: BskyAgent,
   instance: string,
   did: string,
   trusted: Set<string>,
 ): Promise<LinkedRecord[] | undefined> {
   const urip = new AtUri(did)
-
-  if (!urip.host.startsWith('did:')) {
-    const res = await agent.resolveHandle({
-      handle: urip.host,
-    })
-    urip.host = res.data.did
-  }
 
   try {
     const verificationLinks = asyncGenTake(
@@ -138,12 +129,11 @@ function createVerificationState(
 }
 
 function useDeerVerifierCtx() {
-  const agent = useAgent()
   const instance = useConstellationInstance()
   const currentAccountProfile = useCurrentAccountProfile()
   const trusted = useDeerVerificationTrusted(currentAccountProfile?.did)
 
-  return {agent, instance, trusted}
+  return {instance, trusted}
 }
 
 export function useDeerVerificationState({
@@ -153,7 +143,7 @@ export function useDeerVerificationState({
   profile: AnyProfileView | undefined
   enabled?: boolean
 }) {
-  const {agent, instance, trusted} = useDeerVerifierCtx()
+  const {instance, trusted} = useDeerVerifierCtx()
 
   const linkedRecords = useQuery<LinkedRecord[] | undefined>({
     staleTime: STALE.HOURS.ONE,
@@ -162,7 +152,6 @@ export function useDeerVerificationState({
       if (!profile) return undefined
 
       return await fetchDeerVerificationLinkedRecords(
-        agent,
         instance,
         profile.did,
         trusted,
