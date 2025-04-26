@@ -6,37 +6,54 @@
   };
 
   outputs =
-    { nixpkgs, flake-utils,  android-nixpkgs, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          android_sdk.accept_license = true;
-          allowUnfree = true;
-        };
-      };
-      pinnedJDK = pkgs.jdk17;
-      androidSdk = android-nixpkgs.sdk.${system} (sdkPkgs: with sdkPkgs; [
-        cmdline-tools-latest
-        build-tools-35-0-0
-        build-tools-34-0-0
-        platform-tools
-        platforms-android-35
-        emulator
-        cmake-3-22-1
-        ndk-26-1-10909125
-        ndk-28-0-13004108
-      ]);
-    in
-    with pkgs;
     {
-      packages = {
-        default = callPackage ./default.nix { };
-      };
-      devShells = {
-        default =
-          mkShell rec {
+      nixpkgs,
+      flake-utils,
+      android-nixpkgs,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            android_sdk.accept_license = true;
+            allowUnfree = true;
+          };
+        };
+        pinnedJDK = pkgs.jdk17;
+        androidSdk = android-nixpkgs.sdk.${system} (
+          sdkPkgs:
+          with sdkPkgs;
+          [
+            cmdline-tools-latest
+            build-tools-35-0-0
+            build-tools-34-0-0
+            platform-tools
+            platforms-android-35
+            emulator
+            cmake-3-22-1
+            ndk-26-1-10909125
+            ndk-28-0-13004108
+          ]
+          ++ nixpkgs.lib.optionals (system == "aarch64-darwin") [
+            system-images-android-35-google-apis-arm64-v8a
+            system-images-android-35-google-apis-playstore-arm64-v8a
+          ]
+          ++ nixpkgs.lib.optionals (system == "x86_64-darwin" || system == "x86_64-linux") [
+            system-images-android-35-google-apis-x86-64
+            system-images-android-35-google-apis-playstore-x86-64
+          ]
+        );
+      in
+      with pkgs;
+      {
+        packages = {
+          default = callPackage ./default.nix { };
+        };
+        devShells = {
+          default = mkShell rec {
             buildInputs = [
               androidSdk
               pinnedJDK
@@ -62,6 +79,7 @@
             ];
 
           };
-      };
-    });
+        };
+      }
+    );
 }
