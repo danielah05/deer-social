@@ -157,6 +157,15 @@ function ConstellationInstanceDialog({
     setUrl('')
   }
 
+  const shouldDisable = () => {
+    try {
+      new URL(url)
+      return false
+    } catch (e) {
+      return true
+    }
+  }
+
   return (
     <Dialog.Outer control={control} nativeOptions={{preventExpansion: true}}>
       <Dialog.Handle />
@@ -190,7 +199,7 @@ function ConstellationInstanceDialog({
               onPress={submit}
               variant="solid"
               color="primary"
-              disabled={!URL.canParse(url)}>
+              disabled={shouldDisable()}>
               <ButtonText>
                 <Trans>Save</Trans>
               </ButtonText>
