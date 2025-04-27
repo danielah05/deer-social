@@ -78,6 +78,9 @@
 
             ];
 
+            shellHook = ''
+              export GRADLE_USER_HOME=~/.cache/gradle
+            '';
           };
         };
       }
