@@ -1,5 +1,6 @@
 import {useState} from 'react'
 import {View} from 'react-native'
+import {type ProfileViewBasic} from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {type NativeStackScreenProps} from '@react-navigation/native-stack'
@@ -51,10 +52,8 @@ import {
   useSetRepostCarouselEnabled,
 } from '#/state/preferences/repost-carousel-enabled'
 import {useProfilesQuery} from '#/state/queries/profile'
-import {TextInput} from '#/view/com/modals/util'
-import {List} from '#/view/com/util/List'
 import * as SettingsList from '#/screens/Settings/components/SettingsList'
-import {atoms as a} from '#/alf'
+import {atoms as a, useBreakpoints} from '#/alf'
 import {Admonition} from '#/components/Admonition'
 import {Button, ButtonText} from '#/components/Button'
 import * as Dialog from '#/components/Dialog'
@@ -101,8 +100,8 @@ function GeolocationSettingsDialog({
         </View>
 
         <View style={a.gap_lg}>
-          <TextInput
-            accessibilityLabel="Text input field"
+          <Dialog.Input
+            label="Text input field"
             autoFocus
             style={[styles.textInput, pal.border, pal.text]}
             value={countryCode}
@@ -153,21 +152,21 @@ function ConstellationInstanceDialog({
   const submit = () => {
     setConstellationInstance(url)
     control.close()
-    // need to clear since we don't set value of input and component may be reused
-    setUrl('')
   }
 
   const shouldDisable = () => {
     try {
-      new URL(url)
-      return false
+      return !new URL(url).hostname.includes('.')
     } catch (e) {
       return true
     }
   }
 
   return (
-    <Dialog.Outer control={control} nativeOptions={{preventExpansion: true}}>
+    <Dialog.Outer
+      control={control}
+      nativeOptions={{preventExpansion: true}}
+      onClose={() => setUrl('')}>
       <Dialog.Handle />
       <Dialog.ScrollableInner label={_(msg`Constellations instance URL`)}>
         <View style={[a.gap_sm, a.pb_lg]}>
@@ -177,8 +176,8 @@ function ConstellationInstanceDialog({
         </View>
 
         <View style={a.gap_lg}>
-          <TextInput
-            accessibilityLabel="Text input field"
+          <Dialog.Input
+            label="Text input field"
             autoFocus
             style={[styles.textInput, pal.border, pal.text]}
             onChangeText={value => {
@@ -221,17 +220,20 @@ const TrustedVerifiers = (): React.ReactNode => {
     handles: Array.from(trusted),
   })
 
+  const {gtMobile} = useBreakpoints()
+
   return (
     results.data &&
     moderationOpts !== undefined && (
-      <List
-        data={results.data.profiles}
-        renderItem={({item}) => (
-          <SearchProfileCard profile={item} moderationOpts={moderationOpts} />
-        )}
-        keyExtractor={item => item.did}
-        contentContainerStyle={[a.pl_xl, a.pb_sm]}
-      />
+      <View style={[gtMobile ? a.pl_md : a.pl_sm, a.pb_sm]}>
+        {results.data.profiles.map(profile => (
+          <SearchProfileCard
+            key={profile.did}
+            profile={profile as ProfileViewBasic}
+            moderationOpts={moderationOpts}
+          />
+        ))}
+      </View>
     )
   )
 }
