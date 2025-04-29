@@ -101,9 +101,11 @@ export function expandPostTextRich(
 class HeadHandler {
   thread: Thread
   url: string
-  constructor(thread: Thread, url: string) {
+  postTextString: string
+  constructor(thread: Thread, url: string, postTextString: string) {
     this.thread = thread
     this.url = url
+    this.postTextString = postTextString
   }
   async element(element) {
     const author = this.thread.post.author
@@ -113,13 +115,13 @@ class HeadHandler {
           content="${author.displayName} (@${author.handle})" />`
       : html`<meta property="og:title" content="${author.handle}" />`
 
-    const postTextString = expandPostTextRich(this.thread)
-    const postText = postTextString
-      ? html`
-          <meta name="description" content="${postTextString}" />
-          <meta property="og:description" content="${postTextString}" />
-        `
-      : ''
+    const postText =
+      this.postTextString.length > 0
+        ? html`
+            <meta name="description" content="${this.postTextString}" />
+            <meta property="og:description" content="${this.postTextString}" />
+          `
+        : ''
 
     // const img = view.banner
     //   ? html`
@@ -138,6 +140,51 @@ class HeadHandler {
         ${title} ${postText}
         <meta name="twitter:label1" content="Account DID" />
         <meta name="twitter:value1" content="${author.did}" />
+        <meta
+          name="article:published_time"
+          content="${this.thread.post.indexedAt}" />
+      `,
+      {html: true},
+    )
+  }
+}
+
+class TitleHandler {
+  thread: Thread
+  constructor(thread: Thread) {
+    this.thread = thread
+  }
+  async element(element) {
+    const view = this.thread.post.author
+
+    element.setInnerContent(
+      view.handle
+        ? `${view.displayName} (@${view.handle})`
+        : `@${view.handle} on deer.social`,
+    )
+  }
+}
+
+class NoscriptHandler {
+  thread: Thread
+  postTextString: string
+  constructor(thread: Thread, postTextString: string) {
+    this.thread = thread
+    this.postTextString = postTextString
+  }
+  async element(element) {
+    element.append(
+      html`
+        <div id="bsky_post_summary">
+          <h3>Post</h3>
+          <p id="bsky_display_name">
+            ${this.thread.post.author.displayName ?? ''}
+          </p>
+          <p id="bsky_handle">${this.thread.post.author.handle}</p>
+          <p id="bsky_did">${this.thread.post.author.did}</p>
+          <p id="bsky_post_text">${this.postTextString}</p>
+          <p id="bsky_post_indexedat">${this.thread.post.indexedAt}</p>
+        </div>
       `,
       {html: true},
     )
@@ -161,8 +208,11 @@ export async function onRequest(context) {
     if (!AppBskyFeedDefs.isThreadViewPost(data.thread)) {
       throw new Error('Expected a ThreadViewPost')
     }
+    const postTextString = expandPostTextRich(data.thread)
     return new HTMLRewriter()
-      .on(`head`, new HeadHandler(data.thread, request.url))
+      .on(`head`, new HeadHandler(data.thread, request.url, postTextString))
+      .on(`title`, new TitleHandler(data.thread))
+      .on(`noscript`, new NoscriptHandler(data.thread, postTextString))
       .transform(await base)
   } catch (e) {
     return await base
