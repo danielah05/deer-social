@@ -1,5 +1,6 @@
 import {
   AppBskyEmbedExternal,
+  AppBskyEmbedImages,
   AppBskyEmbedRecord,
   AppBskyEmbedRecordWithMedia,
   AppBskyFeedDefs,
@@ -123,21 +124,21 @@ class HeadHandler {
           `
         : ''
 
-    // const img = view.banner
-    //   ? html`
-    //       <meta property="og:image" content="${view.banner}" />
-    //       <meta name="twitter:card" content="summary_large_image" />
-    //     `
-    //   : view.avatar
-    //   ? html`<meta name="twitter:card" content="summary" />`
-    //   : ''
+    const embed = this.thread.post.embed
+    const embedElems = AppBskyEmbedImages.isView(embed)
+      ? html`${embed.images.map(
+            i => html`<meta property="og:image" content="${i.thumb}" />`,
+          )}
+          <meta name="twitter:card" content="summary_large_image" /> `
+      : html`<meta name="twitter:card" content="summary" />`
+
     element.append(
       html`
         <meta property="og:site_name" content="deer.social" />
         <meta property="og:type" content="article" />
         <meta property="profile:username" content="${author.handle}" />
         <meta property="og:url" content="${this.url}" />
-        ${title} ${postText}
+        ${title} ${postText} ${embedElems}
         <meta name="twitter:label1" content="Account DID" />
         <meta name="twitter:value1" content="${author.did}" />
         <meta

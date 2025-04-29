@@ -19,20 +19,22 @@ const ENTITIES: {
 
 const ENT_REGEX = new RegExp(Object.keys(ENTITIES).join('|'), 'g')
 
-function escapehtml(unsafe: HtmlSafeString | string): string {
+function escapehtml(unsafe: Sub): string {
+  if (Array.isArray(unsafe)) {
+    return unsafe.map(escapehtml).join('')
+  }
   if (unsafe instanceof HtmlSafeString) {
     return unsafe.toString()
   }
   return String(unsafe).replace(ENT_REGEX, char => ENTITIES[char])
 }
 
+type Sub = HtmlSafeString | string | (HtmlSafeString | string)[]
+
 export class HtmlSafeString {
   private _parts: readonly string[]
-  private _subs: readonly (HtmlSafeString | string)[]
-  constructor(
-    parts: readonly string[],
-    subs: readonly (HtmlSafeString | string)[],
-  ) {
+  private _subs: readonly Sub[]
+  constructor(parts: readonly string[], subs: readonly Sub[]) {
     this._parts = parts
     this._subs = subs
   }
@@ -46,10 +48,7 @@ export class HtmlSafeString {
   }
 }
 
-export function html(
-  parts: TemplateStringsArray,
-  ...subs: (HtmlSafeString | string)[]
-) {
+export function html(parts: TemplateStringsArray, ...subs: Sub[]) {
   return new HtmlSafeString(parts, subs)
 }
 
