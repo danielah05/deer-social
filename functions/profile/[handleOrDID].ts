@@ -46,7 +46,7 @@ export class HtmlSafeString {
   }
 }
 
-function html(
+export function html(
   parts: TemplateStringsArray,
   ...subs: (HtmlSafeString | string)[]
 ) {
