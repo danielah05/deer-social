@@ -73,6 +73,8 @@
               crowdin-cli
               eas-cli
 
+              bundletool
+
               typescript
               typescript-language-server
 
