@@ -1,6 +1,6 @@
 import {AtpAgent} from '@atproto/api'
 
-type PResp = ReturnType<AtpAgent['getProfile']>
+type PResp = Awaited<ReturnType<AtpAgent['getProfile']>>
 
 // based on https://github.com/Janpot/escape-html-template-tag/blob/master/src/index.ts
 
@@ -61,44 +61,42 @@ class HeadHandler {
     this.url = url
   }
   async element(element) {
-    try {
-      const view = (await this.profile).data
+    const view = this.profile.data
 
-      const title = view.displayName
-        ? html`<meta
-            property="og:title"
-            content="${view.displayName} (@${view.handle})" />`
-        : html`<meta property="og:title" content="${view.handle}" />`
-      const description = view.description
-        ? html`
-            <meta name="description" content="${view.description}" />
-            <meta property="og:description" content="${view.description}" />
-          `
-        : ''
-      const img = view.banner
-        ? html`
-            <meta property="og:image" content="${view.banner}" />
-            <meta name="twitter:card" content="summary_large_image" />
-          `
-        : view.avatar
-        ? html`<meta name="twitter:card" content="summary" />`
-        : ''
-      element.append(
-        html`
-          <meta property="og:site_name" content="deer.social" />
-          <meta property="og:type" content="profile" />
-          <meta property="profile:username" content="${view.handle}" />
-          <meta property="og:url" content="${this.url}" />
-          ${title} ${description} ${img}
-          <meta name="twitter:label1" content="Account DID" />
-          <meta name="twitter:value1" content="${view.did}" />
-          <link
-            rel="alternate"
-            href="at://${view.did}/app.bsky.actor.profile/self" />
-        `,
-        {html: true},
-      )
-    } catch (e) {}
+    const title = view.displayName
+      ? html`<meta
+          property="og:title"
+          content="${view.displayName} (@${view.handle})" />`
+      : html`<meta property="og:title" content="${view.handle}" />`
+    const description = view.description
+      ? html`
+          <meta name="description" content="${view.description}" />
+          <meta property="og:description" content="${view.description}" />
+        `
+      : ''
+    const img = view.banner
+      ? html`
+          <meta property="og:image" content="${view.banner}" />
+          <meta name="twitter:card" content="summary_large_image" />
+        `
+      : view.avatar
+      ? html`<meta name="twitter:card" content="summary" />`
+      : ''
+    element.append(
+      html`
+        <meta property="og:site_name" content="deer.social" />
+        <meta property="og:type" content="profile" />
+        <meta property="profile:username" content="${view.handle}" />
+        <meta property="og:url" content="${this.url}" />
+        ${title} ${description} ${img}
+        <meta name="twitter:label1" content="Account DID" />
+        <meta name="twitter:value1" content="${view.did}" />
+        <link
+          rel="alternate"
+          href="at://${view.did}/app.bsky.actor.profile/self" />
+      `,
+      {html: true},
+    )
   }
 }
 
@@ -108,15 +106,13 @@ class TitleHandler {
     this.profile = profile
   }
   async element(element) {
-    try {
-      const view = (await this.profile).data
+    const view = this.profile.data
 
-      element.setInnerContent(
-        view.handle
-          ? `${view.displayName} (@${view.handle})`
-          : `@${view.handle} on deer.social`,
-      )
-    } catch (e) {}
+    element.setInnerContent(
+      view.handle
+        ? `${view.displayName} (@${view.handle})`
+        : `@${view.handle} on deer.social`,
+    )
   }
 }
 
@@ -126,22 +122,20 @@ class NoscriptHandler {
     this.profile = profile
   }
   async element(element) {
-    try {
-      const view = (await this.profile).data
+    const view = this.profile.data
 
-      element.append(
-        html`
-          <div id="bsky_profile_summary">
-            <h3>Profile</h3>
-            <p id="bsky_display_name">${view.displayName ?? ''}</p>
-            <p id="bsky_handle">${view.handle}</p>
-            <p id="bsky_did">${view.did}</p>
-            <p id="bsky_profile_description">${view.description ?? ''}</p>
-          </div>
-        `,
-        {html: true},
-      )
-    } catch (e) {}
+    element.append(
+      html`
+        <div id="bsky_profile_summary">
+          <h3>Profile</h3>
+          <p id="bsky_display_name">${view.displayName ?? ''}</p>
+          <p id="bsky_handle">${view.handle}</p>
+          <p id="bsky_did">${view.did}</p>
+          <p id="bsky_profile_description">${view.description ?? ''}</p>
+        </div>
+      `,
+      {html: true},
+    )
   }
 }
 
@@ -151,9 +145,8 @@ export async function onRequest(context) {
   const origin = new URL(request.url).origin
 
   const base = env.ASSETS.fetch(new URL('/', origin))
-  // i think it'll never fail this soon, but just to be safe
   try {
-    const profile = agent.getProfile({
+    const profile = await agent.getProfile({
       actor: context.params.handleOrDID,
     })
     return new HTMLRewriter()
