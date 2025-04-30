@@ -79,12 +79,13 @@ export function expandPostTextRich(
     AppBskyEmbedRecord.isView(embed) ||
     AppBskyEmbedRecordWithMedia.isView(embed)
   ) {
-    if (isViewRecord(embed.record)) {
+    const record = embed.record.record ?? embed.record
+    if (isViewRecord(record)) {
       const quote = `↘️ quoting ${
-        embed.record.author.displayName
-          ? `${embed.record.author.displayName} (@${embed.record.author.handle})`
-          : `@${embed.record.author.handle}`
-      }\n\n${embed.record.value.text}`
+        record.author?.displayName
+          ? `${record.author.displayName} (@${record.author.handle})`
+          : `@${record.author.handle}`
+      }\n\n${record.value.text}`
       expandedText = expandedText ? `${expandedText}\n\n${quote}` : quote
     } else {
       const placeholder = '[quote/embed]'
