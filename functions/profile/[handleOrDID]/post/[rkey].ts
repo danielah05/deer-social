@@ -83,7 +83,7 @@ export function expandPostTextRich(
     // no idea why this is needed lol
     const record = embed.record.record ?? embed.record
     if (isViewRecord(record)) {
-      const quote = `↘️ quoting ${renderHandleString(record.author)}\n\n${
+      const quote = `↘️ quoting ${renderHandleString(record.author)}:\n\n${
         record.value.text
       }`
       expandedText = expandedText ? `${expandedText}\n\n${quote}` : quote
