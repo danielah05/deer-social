@@ -142,7 +142,7 @@ class HeadHandler {
         <meta property="og:type" content="article" />
         <meta property="profile:username" content="${author.handle}" />
         <meta property="og:url" content="${this.url}" />
-        <meta property="og:title" contents="${renderHandleString(author)}" />
+        <meta property="og:title" content="${renderHandleString(author)}" />
         ${postText} ${embedElems}
         <meta name="twitter:label1" content="Account DID" />
         <meta name="twitter:value1" content="${author.did}" />
