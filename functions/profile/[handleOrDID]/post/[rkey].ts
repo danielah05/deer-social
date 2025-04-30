@@ -105,13 +105,6 @@ export function expandPostTextRich(
   return expandedText
 }
 
-const getYoutubeOGVideo = (uri: string) => {
-  const m = /^https:\/\/youtu\.be\/(\w+)/.exec(uri)
-  if (m === null || m[1] === undefined) return false
-
-  return `https://youtube.com/v/${m[1]}`
-}
-
 class HeadHandler {
   thread: Thread
   url: string
@@ -134,10 +127,6 @@ class HeadHandler {
 
     const embed = this.thread.post.embed
 
-    const youtubeOGVideo =
-      AppBskyEmbedExternal.isView(embed) &&
-      getYoutubeOGVideo(embed.external.uri)
-
     const embedElems = !embed
       ? ''
       : AppBskyEmbedImages.isView(embed)
@@ -145,12 +134,7 @@ class HeadHandler {
             i => html`<meta property="og:image" content="${i.thumb}" />`,
           )}
           <meta name="twitter:card" content="summary_large_image" /> `
-      : youtubeOGVideo
-      ? html`
-          <meta property="og:video" content="${youtubeOGVideo}" />
-          <meta name="twitter:card" content="summary_large_image" />
-        `
-      : // TODO: in the future, embed the video
+      : // TODO: in the future, embed videos
       'thumbnail' in embed && embed.thumbnail
       ? html`
           <meta property="og:image" content="${embed.thumbnail}" />
