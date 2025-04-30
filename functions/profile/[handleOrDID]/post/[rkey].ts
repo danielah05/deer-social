@@ -10,6 +10,7 @@ import {
   RichText,
 } from '@atproto/api'
 import {isViewRecord} from '@atproto/api/dist/client/types/app/bsky/embed/record'
+import {isThreadViewPost} from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 
 import {html, renderHandleString} from '../../[handleOrDID].ts'
 
@@ -94,6 +95,14 @@ export function expandPostTextRich(
           : placeholder
       }
     }
+  }
+
+  // prepend reply header
+  if (isThreadViewPost(postView.parent)) {
+    const header = `↩️ reply to ${renderHandleString(
+      postView.parent.post.author,
+    )}:`
+    expandedText = expandedText ? `${header}\n\n${expandedText}` : header
   }
 
   return expandedText
@@ -194,7 +203,7 @@ export async function onRequest(context) {
     const {data} = await agent.getPostThread({
       uri: `at://${handleOrDID}/app.bsky.feed.post/${rkey}`,
       depth: 1,
-      parentHeight: 0,
+      parentHeight: 1,
     })
     if (!AppBskyFeedDefs.isThreadViewPost(data.thread)) {
       throw new Error('Expected a ThreadViewPost')
