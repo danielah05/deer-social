@@ -11,7 +11,7 @@ import {
 } from '@atproto/api'
 import {isViewRecord} from '@atproto/api/dist/client/types/app/bsky/embed/record'
 
-import {html} from '../../[handleOrDID].ts'
+import {html, renderHandleString} from '../../[handleOrDID].ts'
 
 type Thread = AppBskyFeedDefs.ThreadViewPost
 
@@ -79,13 +79,12 @@ export function expandPostTextRich(
     AppBskyEmbedRecord.isView(embed) ||
     AppBskyEmbedRecordWithMedia.isView(embed)
   ) {
+    // no idea why this is needed lol
     const record = embed.record.record ?? embed.record
     if (isViewRecord(record)) {
-      const quote = `↘️ quoting ${
-        record.author?.displayName
-          ? `${record.author.displayName} (@${record.author.handle})`
-          : `@${record.author.handle}`
-      }\n\n${record.value.text}`
+      const quote = `↘️ quoting ${renderHandleString(record.author)}\n\n${
+        record.value.text
+      }`
       expandedText = expandedText ? `${expandedText}\n\n${quote}` : quote
     } else {
       const placeholder = '[quote/embed]'
@@ -111,11 +110,6 @@ class HeadHandler {
   }
   async element(element) {
     const author = this.thread.post.author
-    const title = author.displayName
-      ? html`<meta
-          property="og:title"
-          content="${author.displayName} (@${author.handle})" />`
-      : html`<meta property="og:title" content="${author.handle}" />`
 
     const postText =
       this.postTextString.length > 0
@@ -139,7 +133,8 @@ class HeadHandler {
         <meta property="og:type" content="article" />
         <meta property="profile:username" content="${author.handle}" />
         <meta property="og:url" content="${this.url}" />
-        ${title} ${postText} ${embedElems}
+        <meta property="og:title" contents="${renderHandleString(author)}" />
+        ${postText} ${embedElems}
         <meta name="twitter:label1" content="Account DID" />
         <meta name="twitter:value1" content="${author.did}" />
         <meta
@@ -157,13 +152,7 @@ class TitleHandler {
     this.thread = thread
   }
   async element(element) {
-    const view = this.thread.post.author
-
-    element.setInnerContent(
-      view.handle
-        ? `${view.displayName} (@${view.handle})`
-        : `@${view.handle} on deer.social`,
-    )
+    element.setInnerContent(renderHandleString(this.thread.post.author))
   }
 }
 

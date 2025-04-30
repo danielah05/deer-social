@@ -1,5 +1,7 @@
 import {AtpAgent} from '@atproto/api'
 
+import {type AnyProfileView} from '#/types/bsky/profile'
+
 type PResp = Awaited<ReturnType<AtpAgent['getProfile']>>
 
 // based on https://github.com/Janpot/escape-html-template-tag/blob/master/src/index.ts
@@ -52,6 +54,11 @@ export function html(parts: TemplateStringsArray, ...subs: Sub[]) {
   return new HtmlSafeString(parts, subs)
 }
 
+export const renderHandleString = (profile: AnyProfileView) =>
+  profile.displayName
+    ? `${profile.displayName} (@${profile.handle})`
+    : `@${profile.handle}`
+
 class HeadHandler {
   profile: PResp
   url: string
@@ -62,11 +69,6 @@ class HeadHandler {
   async element(element) {
     const view = this.profile.data
 
-    const title = view.displayName
-      ? html`<meta
-          property="og:title"
-          content="${view.displayName} (@${view.handle})" />`
-      : html`<meta property="og:title" content="${view.handle}" />`
     const description = view.description
       ? html`
           <meta name="description" content="${view.description}" />
@@ -87,7 +89,8 @@ class HeadHandler {
         <meta property="og:type" content="profile" />
         <meta property="profile:username" content="${view.handle}" />
         <meta property="og:url" content="${this.url}" />
-        ${title} ${description} ${img}
+        <meta property="og:title" content="${renderHandleString(view)}" />
+        ${description} ${img}
         <meta name="twitter:label1" content="Account DID" />
         <meta name="twitter:value1" content="${view.did}" />
         <link
@@ -105,13 +108,7 @@ class TitleHandler {
     this.profile = profile
   }
   async element(element) {
-    const view = this.profile.data
-
-    element.setInnerContent(
-      view.handle
-        ? `${view.displayName} (@${view.handle})`
-        : `@${view.handle} on deer.social`,
-    )
+    element.setInnerContent(renderHandleString(this.profile.data))
   }
 }
 
