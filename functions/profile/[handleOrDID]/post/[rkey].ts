@@ -3,6 +3,7 @@ import {
   AppBskyEmbedImages,
   AppBskyEmbedRecord,
   AppBskyEmbedRecordWithMedia,
+  AppBskyEmbedVideo,
   AppBskyFeedDefs,
   type AppBskyRichtextFacet,
   AtpAgent,
@@ -134,6 +135,16 @@ class HeadHandler {
             i => html`<meta property="og:image" content="${i.thumb}" />`,
           )}
           <meta name="twitter:card" content="summary_large_image" /> `
+      : // TODO: in the future, embed the video
+      AppBskyEmbedVideo.isView(embed) && embed.thumbnail
+      ? html`
+          <meta
+            property="og:image"
+            content="${embed.thumbnail}"
+            <meta
+            name="twitter:card"
+            content="summary_large_image" />
+        `
       : html`<meta name="twitter:card" content="summary" />`
 
     element.append(
