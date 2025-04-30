@@ -151,6 +151,7 @@ export async function onRequest(context) {
       .on(`noscript`, new NoscriptHandler(profile))
       .transform(await base)
   } catch (e) {
+    console.error(e)
     return await base
   }
 }

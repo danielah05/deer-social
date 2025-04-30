@@ -5,7 +5,6 @@ import {
   AppBskyEmbedRecordWithMedia,
   AppBskyEmbedVideo,
   AppBskyFeedDefs,
-  type AppBskyRichtextFacet,
   AtpAgent,
   type Facet,
   RichText,
@@ -43,9 +42,7 @@ export function expandPostTextRich(
       const modifiedSegmentsText: string[] = []
 
       for (const segment of rt.segments()) {
-        // Check for link facets that appear shortened (e.g., example.com...)
-        const link =
-          segment.isLink() && (segment as unknown as AppBskyRichtextFacet.Link)
+        const link = segment.link
         if (
           link &&
           segment.text.endsWith('...') &&
@@ -60,7 +57,7 @@ export function expandPostTextRich(
       }
       expandedText = modifiedSegmentsText.join('')
     } catch (error) {
-      // console.error("Error processing RichText segments:", error);
+      console.error('Error processing RichText segments:', error)
       // Fallback to original text on error
       expandedText = originalText
     }
@@ -226,6 +223,7 @@ export async function onRequest(context) {
       .on(`noscript`, new NoscriptHandler(data.thread, postTextString))
       .transform(await base)
   } catch (e) {
+    console.error(e)
     return await base
   }
 }
