@@ -54,6 +54,8 @@ import {
   useSetRepostCarouselEnabled,
 } from '#/state/preferences/repost-carousel-enabled'
 import {useProfilesQuery} from '#/state/queries/profile'
+import {findService, useDidDocument} from '#/state/queries/resolve-identity'
+import {ErrorMessage} from '#/view/com/util/error/ErrorMessage'
 import * as SettingsList from '#/screens/Settings/components/SettingsList'
 import {atoms as a, useBreakpoints} from '#/alf'
 import {Admonition} from '#/components/Admonition'
@@ -223,13 +225,18 @@ function CustomAppViewDidDialog({
   const {_} = useLingui()
 
   const [did, setDid] = useState('')
-  const [setCustomAppViewDid] = useCustomAppViewDid()
+  const [, setCustomAppViewDid] = useCustomAppViewDid()
+  console.log(v)
 
-  const disable = !isDid(did) || did.endsWith('#bsky_appview')
+  const doc = useDidDocument({did})
+  const bskyAppViewService =
+    doc.data && findService(doc.data, '#bsky_appview', 'BskyAppView')
+
+  const disable = !bskyAppViewService?.serviceEndpoint
 
   const submit = () => {
     if (disable) return
-    setCustomAppViewDid(did)
+    setCustomAppViewDid(`${did}#bsky_appview`)
     control.close()
   }
 
@@ -254,13 +261,60 @@ function CustomAppViewDidDialog({
             onChangeText={value => {
               setDid(value)
             }}
-            placeholder={`did:web:api.bsky.app#bsky_appview`}
+            placeholder={`did:web:api.bsky.app`}
             placeholderTextColor={pal.colors.textLight}
             onSubmitEditing={submit}
             accessibilityHint={_(
               msg`Input the DID of the AppView to proxy requests through`,
             )}
+            isInvalid={!!did && disable && !doc.isLoading}
           />
+
+          {did && !isDid(did) && (
+            <View>
+              <ErrorMessage message={_(msg`must enter a DID`)} />
+            </View>
+          )}
+
+          {did && (did.includes('#') || did.includes('?')) && (
+            <View>
+              <ErrorMessage message={_(msg`don't include the service id`)} />
+            </View>
+          )}
+
+          {doc.isError && (
+            <View>
+              <ErrorMessage
+                message={
+                  doc.error.message || _(msg`document resolution failure`)
+                }
+              />
+            </View>
+          )}
+
+          {doc.data &&
+            !bskyAppViewService &&
+            (doc.data as {message?: string}).message && (
+              <View>
+                <ErrorMessage
+                  message={(doc.data as {message: string}).message}
+                />
+              </View>
+            )}
+
+          {doc.data && !bskyAppViewService && (
+            <View>
+              <ErrorMessage
+                message={_(msg`document doesn't contain #bsky_appview service`)}
+              />
+            </View>
+          )}
+
+          {bskyAppViewService && (
+            <Text style={[a.text_sm, a.leading_snug]}>
+              {JSON.stringify(bskyAppViewService, null, 2)}
+            </Text>
+          )}
 
           <View style={isWeb && [a.flex_row, a.justify_end]}>
             <Button

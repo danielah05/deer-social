@@ -9,24 +9,24 @@ export const RQKEY = (did: string) => [RQKEY_ROOT, did]
 
 // this isn't trusted...
 export type DidDocument = {
-  '@context': string[]
-  id: string
+  '@context'?: string[]
+  id?: string
   alsoKnownAs?: string[]
-  verificationMethod: VerificationMethod[]
-  service: Service[]
+  verificationMethod?: VerificationMethod[]
+  service?: Service[]
 }
 
 export type VerificationMethod = {
-  id: string
-  type: string
-  controller: string
-  publicKeyMultibase: string
+  id?: string
+  type?: string
+  controller?: string
+  publicKeyMultibase?: string
 }
 
 export type Service = {
-  id: string
-  type: string
-  serviceEndpoint: string
+  id?: string
+  type?: string
+  serviceEndpoint?: string
 }
 
 const serviceCache = new LRU<Did, DidDocument>()
@@ -43,7 +43,11 @@ export async function resolveDidDocument(did: Did) {
 }
 
 export function findService(doc: DidDocument, id: string, type?: string) {
-  return doc.service.find(s => s.id === id && (!type || s.type === type))
+  // probably not defensive enough, but we don't have atproto/did as a dep...
+  if (!Array.isArray(doc?.service)) return
+  return doc.service.find(
+    s => s?.serviceEndpoint && s?.id === id && (!type || s?.type === type),
+  )
 }
 
 export async function resolvePdsServiceUrl(did: Did) {
@@ -60,6 +64,6 @@ export function useDidDocument({did}: {did: string}) {
       if (!isDid(did)) return undefined
       return await resolveDidDocument(did)
     },
-    enabled: isDid(did),
+    enabled: isDid(did) && !(did.includes('#') || did.includes('?')),
   })
 }
