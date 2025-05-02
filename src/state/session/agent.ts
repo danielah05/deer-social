@@ -1,4 +1,8 @@
-import {type AtpSessionData, type AtpSessionEvent, BskyAgent} from '@atproto/api'
+import {
+  type AtpSessionData,
+  type AtpSessionEvent,
+  BskyAgent,
+} from '@atproto/api'
 import {TID} from '@atproto/common-web'
 
 import {networkRetry} from '#/lib/async/retry'
@@ -15,6 +19,7 @@ import {getAge} from '#/lib/strings/time'
 import {logger} from '#/logger'
 import {snoozeEmailConfirmationPrompt} from '#/state/shell/reminders'
 import {emitNetworkConfirmed, emitNetworkLost} from '../events'
+import {readCustomAppViewDidUri} from '../preferences/custom-appview-did'
 import {addSessionErrorLog} from './logging'
 import {
   configureModerationForAccount,
@@ -268,8 +273,9 @@ class BskyAppAgent extends BskyAgent {
       },
     })
 
-    if (APPVIEW_DID_PROXY) {
-      this.configureProxy(APPVIEW_DID_PROXY)
+    const proxyDid = readCustomAppViewDidUri() || APPVIEW_DID_PROXY
+    if (proxyDid) {
+      this.configureProxy(proxyDid)
     }
   }
 

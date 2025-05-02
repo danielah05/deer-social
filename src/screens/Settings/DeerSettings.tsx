@@ -239,7 +239,7 @@ function CustomAppViewDidDialog({
       return
     }
     if (!bskyAppViewService?.serviceEndpoint) return
-    setCustomAppViewDid(`${did}#bsky_appview`)
+    setCustomAppViewDid(did)
     control.close()
   }
 
