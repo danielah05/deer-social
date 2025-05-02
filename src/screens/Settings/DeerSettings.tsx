@@ -1,5 +1,6 @@
 import {useState} from 'react'
 import {View} from 'react-native'
+import {isDid} from '@atproto/api'
 import {type ProfileViewBasic} from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
@@ -25,6 +26,7 @@ import {
   useConstellationInstance,
   useSetConstellationInstance,
 } from '#/state/preferences/constellation-instance'
+import {useCustomAppViewDid} from '#/state/preferences/custom-appview-did'
 import {
   useDeerVerificationEnabled,
   useDeerVerificationTrusted,
@@ -212,6 +214,75 @@ function ConstellationInstanceDialog({
   )
 }
 
+function CustomAppViewDidDialog({
+  control,
+}: {
+  control: Dialog.DialogControlProps
+}) {
+  const pal = usePalette('default')
+  const {_} = useLingui()
+
+  const [did, setDid] = useState('')
+  const [setCustomAppViewDid] = useCustomAppViewDid()
+
+  const disable = !isDid(did) || did.endsWith('#bsky_appview')
+
+  const submit = () => {
+    if (disable) return
+    setCustomAppViewDid(did)
+    control.close()
+  }
+
+  return (
+    <Dialog.Outer
+      control={control}
+      nativeOptions={{preventExpansion: true}}
+      onClose={() => setDid('')}>
+      <Dialog.Handle />
+      <Dialog.ScrollableInner label={_(msg`Custom AppView Proxy DID`)}>
+        <View style={[a.gap_sm, a.pb_lg]}>
+          <Text style={[a.text_2xl, a.font_bold]}>
+            <Trans>Custom AppView Proxy DID</Trans>
+          </Text>
+        </View>
+
+        <View style={a.gap_lg}>
+          <Dialog.Input
+            label="Text input field"
+            autoFocus
+            style={[styles.textInput, pal.border, pal.text]}
+            onChangeText={value => {
+              setDid(value)
+            }}
+            placeholder={`did:web:api.bsky.app#bsky_appview`}
+            placeholderTextColor={pal.colors.textLight}
+            onSubmitEditing={submit}
+            accessibilityHint={_(
+              msg`Input the DID of the AppView to proxy requests through`,
+            )}
+          />
+
+          <View style={isWeb && [a.flex_row, a.justify_end]}>
+            <Button
+              label={_(msg`Save`)}
+              size="large"
+              onPress={submit}
+              variant="solid"
+              color="primary"
+              disabled={disable}>
+              <ButtonText>
+                <Trans>Save</Trans>
+              </ButtonText>
+            </Button>
+          </View>
+        </View>
+
+        <Dialog.Close />
+      </Dialog.ScrollableInner>
+    </Dialog.Outer>
+  )
+}
+
 const TrustedVerifiers = (): React.ReactNode => {
   const trusted = useDeerVerificationTrusted()
   const moderationOpts = useModerationOpts()
@@ -280,6 +351,9 @@ export function DeerSettingsScreen({}: Props) {
       [gate]: value,
     })
   }
+
+  const [customAppViewDid] = useCustomAppViewDid()
+  const setCustomAppViewDidControl = Dialog.useDialogControl()
 
   return (
     <Layout.Screen>
@@ -472,6 +546,17 @@ export function DeerSettingsScreen({}: Props) {
             </Admonition>
           </SettingsList.Item>
 
+          <SettingsList.Item>
+            <SettingsList.ItemIcon icon={StarIcon} />
+            <SettingsList.ItemText>
+              <Trans>{`Custom AppView DID`}</Trans>
+            </SettingsList.ItemText>
+            <SettingsList.BadgeButton
+              label={customAppViewDid ? _(msg`Set`) : _(msg`Change`)}
+              onPress={() => setCustomAppViewDidControl.open()}
+            />
+          </SettingsList.Item>
+
           <SettingsList.Group contentContainerStyle={[a.gap_sm]}>
             <SettingsList.ItemIcon icon={PaintRollerIcon} />
             <SettingsList.ItemText>
@@ -557,6 +642,7 @@ export function DeerSettingsScreen({}: Props) {
       </Layout.Content>
       <GeolocationSettingsDialog control={setLocationControl} />
       <ConstellationInstanceDialog control={setConstellationInstanceControl} />
+      <CustomAppViewDidDialog control={setCustomAppViewDidControl} />
     </Layout.Screen>
   )
 }

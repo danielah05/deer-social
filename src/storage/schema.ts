@@ -13,6 +13,7 @@ export type Device = {
 
   // deer
   deerGateCache: string
+  customAppViewDid: string
 }
 
 export type Account = {
