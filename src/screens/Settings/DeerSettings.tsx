@@ -6,6 +6,7 @@ import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {type NativeStackScreenProps} from '@react-navigation/native-stack'
 
+import {APPVIEW_DID_PROXY} from '#/lib/constants'
 import {usePalette} from '#/lib/hooks/usePalette'
 import {type CommonNavigatorParams} from '#/lib/routes/types'
 import {type Gate} from '#/lib/statsig/gates'
@@ -226,16 +227,18 @@ function CustomAppViewDidDialog({
 
   const [did, setDid] = useState('')
   const [, setCustomAppViewDid] = useCustomAppViewDid()
-  console.log(v)
 
   const doc = useDidDocument({did})
   const bskyAppViewService =
     doc.data && findService(doc.data, '#bsky_appview', 'BskyAppView')
 
-  const disable = !bskyAppViewService?.serviceEndpoint
-
   const submit = () => {
-    if (disable) return
+    if (did.length === 0) {
+      setCustomAppViewDid(undefined)
+      control.close()
+      return
+    }
+    if (!bskyAppViewService?.serviceEndpoint) return
     setCustomAppViewDid(`${did}#bsky_appview`)
     control.close()
   }
@@ -261,13 +264,18 @@ function CustomAppViewDidDialog({
             onChangeText={value => {
               setDid(value)
             }}
-            placeholder={`did:web:api.bsky.app`}
+            placeholder={
+              APPVIEW_DID_PROXY?.substring(0, APPVIEW_DID_PROXY.indexOf('#')) ||
+              `did:web:api.bsky.app`
+            }
             placeholderTextColor={pal.colors.textLight}
             onSubmitEditing={submit}
             accessibilityHint={_(
               msg`Input the DID of the AppView to proxy requests through`,
             )}
-            isInvalid={!!did && disable && !doc.isLoading}
+            isInvalid={
+              !!did && !bskyAppViewService?.serviceEndpoint && !doc.isLoading
+            }
           />
 
           {did && !isDid(did) && (
@@ -322,10 +330,12 @@ function CustomAppViewDidDialog({
               size="large"
               onPress={submit}
               variant="solid"
-              color="primary"
-              disabled={disable}>
+              color={did.length > 0 ? 'primary' : 'secondary'}
+              disabled={
+                did.length !== 0 && !bskyAppViewService?.serviceEndpoint
+              }>
               <ButtonText>
-                <Trans>Save</Trans>
+                {did.length > 0 ? <Trans>Save</Trans> : <Trans>Reset</Trans>}
               </ButtonText>
             </Button>
           </View>
@@ -609,6 +619,14 @@ export function DeerSettingsScreen({}: Props) {
               label={customAppViewDid ? _(msg`Set`) : _(msg`Change`)}
               onPress={() => setCustomAppViewDidControl.open()}
             />
+          </SettingsList.Item>
+          <SettingsList.Item>
+            <Admonition type="info" style={[a.flex_1]}>
+              <Trans>
+                Restart app after changing your AppView.
+                {customAppViewDid && _(` Currently ${customAppViewDid}`)}
+              </Trans>
+            </Admonition>
           </SettingsList.Item>
 
           <SettingsList.Group contentContainerStyle={[a.gap_sm]}>
