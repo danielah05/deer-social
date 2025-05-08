@@ -9,6 +9,7 @@ import {logger} from '#/logger'
 
 export const BSKY_APP_HOST = 'https://deer.social'
 const BSKY_TRUSTED_HOSTS = [
+  'deer\\.social',
   'bsky\\.app',
   'bsky\\.social',
   'blueskyweb\\.xyz',
@@ -93,7 +94,8 @@ export function toBskyAppUrl(url: string): string {
 export function isBskyAppUrl(url: string): boolean {
   return (
     url.startsWith('https://bsky.app/') ||
-    url.startsWith('https://deer.social/')
+    (url.startsWith('https://deer.social/') &&
+      !url.startsWith('https://deer.social/about'))
   )
 }
 
