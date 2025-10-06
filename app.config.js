@@ -36,7 +36,7 @@ module.exports = function (_config) {
   return {
     expo: {
       version: VERSION,
-      name: 'social.daniela.lol',
+      name: 'Kitty',
       slug: 'deer',
       scheme: ['bluesky', 'deer'],
       // owner: 'blueskysocial',
