@@ -46,4 +46,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
+          name: Kitty v${{ github.run_number }}
+          tag_name: kitty-v${{ github.run_number }}
           files: android/app/build/outputs/apk/release/app-release.apk
