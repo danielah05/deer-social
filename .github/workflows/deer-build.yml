@@ -41,3 +41,9 @@ jobs:
         with:
           name: android
           path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        with:
+          files: android/app/build/outputs/apk/release/app-release.apk
