@@ -44,6 +44,6 @@ jobs:
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main'
         with:
           files: android/app/build/outputs/apk/release/app-release.apk
