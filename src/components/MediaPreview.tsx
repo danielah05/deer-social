@@ -96,7 +96,7 @@ export function ImageItem({
 }) {
   const t = useTheme()
   return (
-    <View style={[a.relative, a.flex_1, {aspectRatio: 1, maxWidth: 100}]}>
+    <View style={[a.relative, a.flex_1, a.aspect_square, {maxWidth: 100}]}>
       <Image
         key={thumbnail}
         source={{uri: thumbnail}}
@@ -140,7 +140,8 @@ export function VideoItem({
         style={[
           {backgroundColor: 'black'},
           a.flex_1,
-          {aspectRatio: 1, maxWidth: 100},
+          a.aspect_square,
+          {maxWidth: 100},
           a.justify_center,
           a.align_center,
         ]}>

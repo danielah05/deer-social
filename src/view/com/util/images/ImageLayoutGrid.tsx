@@ -3,7 +3,6 @@ import {type StyleProp, StyleSheet, View, type ViewStyle} from 'react-native'
 import {type AnimatedRef, useAnimatedRef} from 'react-native-reanimated'
 import {type AppBskyEmbedImages} from '@atproto/api'
 
-import {isAndroid} from '#/platform/detection'
 import {atoms as a, useBreakpoints} from '#/alf'
 import {PostEmbedViewContext} from '#/components/Post/Embed/types'
 import {type Dimensions} from '../../lightbox/ImageViewing/@types'
@@ -63,14 +62,12 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
   const containerRef4 = useAnimatedRef()
   const thumbDimsRef = React.useRef<(Dimensions | null)[]>([])
 
-  const outerFlex = isAndroid ? a.flex_1 : a.flex_shrink
-
   switch (count) {
     case 2: {
       const containerRefs = [containerRef1, containerRef2]
       return (
-        <View style={[outerFlex, a.flex_row, gap]}>
-          <View style={[a.flex_1, {aspectRatio: 1}]}>
+        <View style={[a.flex_1, a.flex_row, gap]}>
+          <View style={[a.flex_1, a.aspect_square]}>
             <GalleryItem
               {...props}
               index={0}
@@ -79,7 +76,7 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
               thumbDimsRef={thumbDimsRef}
             />
           </View>
-          <View style={[a.flex_1, {aspectRatio: 1}]}>
+          <View style={[a.flex_1, a.aspect_square]}>
             <GalleryItem
               {...props}
               index={1}
@@ -95,8 +92,8 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
     case 3: {
       const containerRefs = [containerRef1, containerRef2, containerRef3]
       return (
-        <View style={[outerFlex, a.flex_row, gap]}>
-          <View style={[a.flex_1, {aspectRatio: 1}]}>
+        <View style={[a.flex_1, a.flex_row, gap]}>
+          <View style={[a.flex_1, a.aspect_square]}>
             <GalleryItem
               {...props}
               index={0}
@@ -105,7 +102,7 @@ function ImageLayoutGridInner(props: ImageLayoutGridInnerProps) {
               thumbDimsRef={thumbDimsRef}
             />
           </View>
-          <View style={[a.flex_1, {aspectRatio: 1}, gap]}>
+          <View style={[a.flex_1, a.aspect_square, gap]}>
             <View style={[a.flex_1]}>
               <GalleryItem
                 {...props}

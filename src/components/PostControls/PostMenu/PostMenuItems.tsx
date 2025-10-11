@@ -54,6 +54,11 @@ import {
 } from '#/state/queries/profile'
 import {resolvePdsServiceUrl} from '#/state/queries/resolve-identity'
 import {useToggleReplyVisibilityMutation} from '#/state/queries/threadgate'
+import {
+  InvalidInteractionSettingsError,
+  MAX_HIDDEN_REPLIES,
+  MaxHiddenRepliesError,
+} from '#/state/queries/threadgate'
 import {useRequireAuth, useSession} from '#/state/session'
 import {useMergedThreadgateHiddenReplies} from '#/state/threadgate-hidden-replies'
 import * as Toast from '#/view/com/util/Toast'
@@ -347,10 +352,30 @@ let PostMenuItems = ({
           : _(msg({message: 'Reply visibility updated', context: 'toast'})),
       )
     } catch (e: any) {
-      Toast.show(
-        _(msg({message: 'Updating reply visibility failed', context: 'toast'})),
-      )
-      logger.error(`Failed to ${action} reply`, {safeMessage: e.message})
+      if (e instanceof MaxHiddenRepliesError) {
+        Toast.show(
+          _(
+            msg({
+              message: `You can hide a maximum of ${MAX_HIDDEN_REPLIES} replies.`,
+              context: 'toast',
+            }),
+          ),
+        )
+      } else if (e instanceof InvalidInteractionSettingsError) {
+        Toast.show(
+          _(msg({message: 'Invalid interaction settings.', context: 'toast'})),
+        )
+      } else {
+        Toast.show(
+          _(
+            msg({
+              message: 'Updating reply visibility failed',
+              context: 'toast',
+            }),
+          ),
+        )
+        logger.error(`Failed to ${action} reply`, {safeMessage: e.message})
+      }
     }
   }
 
