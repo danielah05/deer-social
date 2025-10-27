@@ -1,6 +1,6 @@
 {
   "name": "social.daniela.lol",
-  "version": "1.109.0",
+  "version": "1.110.0",
   "private": true,
   "engines": {
     "node": ">=18"
