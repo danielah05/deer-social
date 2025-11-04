@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, type TextProps} from 'react-native'
+import {type TextProps} from 'react-native'
 import Svg, {
   Defs,
   LinearGradient,
@@ -10,6 +10,8 @@ import Svg, {
 } from 'react-native-svg'
 
 import {colors} from '#/lib/styles'
+//import {useKawaiiMode} from '#/state/preferences/kawaii'
+import {flatten} from '#/alf'
 
 const ratio = 512 / 512
 
@@ -21,7 +23,7 @@ type Props = {
 export const Logo = React.forwardRef(function LogoImpl(props: Props, ref) {
   const {fill, ...rest} = props
   const gradient = fill === 'sky'
-  const styles = StyleSheet.flatten(props.style)
+  const styles = flatten(props.style)
   const _fill = gradient ? 'url(#sky)' : fill || styles?.color || colors.blue3
   // @ts-ignore it's fiiiiine
   const size = parseInt(rest.width || 32)
