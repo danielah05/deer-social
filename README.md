@@ -5,8 +5,8 @@ This is a fork of the soft fork [deer.social](https://github.com/a-viv-a/deer-so
 Get the app itself:
 
 - **Web: [social.daniela.lol](https://social.daniela.lol)**
-- **Android: [Github Releases](github.com/kittibytess/deer-social/releases/latest)**
-<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/kittibytess/deer-social">
+- **Android: [Github Releases](github.com/kittibyte/deer-social/releases/latest)**
+<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/kittibyte/deer-social">
 <img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png?raw=true"
 alt="Get it on Obtainium" align="center" height="54" /></a>
 
