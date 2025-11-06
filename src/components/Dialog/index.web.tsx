@@ -180,6 +180,7 @@ export function Inner({
         onClick={stopPropagation}
         onStartShouldSetResponder={_ => true}
         onTouchEnd={stopPropagation}
+        // note: flatten is required for some reason -sfn
         style={flatten([
           a.relative,
           a.rounded_md,
