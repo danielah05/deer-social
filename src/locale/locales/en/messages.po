@@ -1047,7 +1047,6 @@ msgid "An illustration showing that Bluesky selects trusted verifiers, and trust
 msgstr ""
 
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:239
-#: src/lib/moderation/useReportOptions.ts:28
 msgid "An issue not included in these options"
 msgstr ""
 
@@ -1063,8 +1062,6 @@ msgstr ""
 #: src/components/hooks/useFollowMethods.ts:50
 #: src/components/ProfileCard.tsx:484
 #: src/components/ProfileCard.tsx:505
-#: src/view/com/profile/FollowButton.tsx:38
-#: src/view/com/profile/FollowButton.tsx:48
 msgid "An issue occurred, please try again."
 msgstr ""
 
@@ -1105,10 +1102,6 @@ msgstr ""
 
 #: src/components/dialogs/nuxs/InitialVerificationAnnouncement.tsx:37
 msgid "Announcing verification on Bluesky"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:33
-msgid "Anti-Social Behavior"
 msgstr ""
 
 #: src/view/com/composer/threadgate/ThreadgateBtn.tsx:48
@@ -1304,8 +1297,8 @@ msgstr ""
 
 #: src/components/moderation/LabelsOnMeDialog.tsx:333
 #: src/components/moderation/LabelsOnMeDialog.tsx:334
-#: src/screens/Login/ChooseAccountForm.tsx:90
-#: src/screens/Login/ChooseAccountForm.tsx:95
+#: src/screens/Login/ChooseAccountForm.tsx:91
+#: src/screens/Login/ChooseAccountForm.tsx:96
 #: src/screens/Login/ForgotPasswordForm.tsx:123
 #: src/screens/Login/ForgotPasswordForm.tsx:129
 #: src/screens/Login/LoginForm.tsx:310
@@ -1412,10 +1405,6 @@ msgstr ""
 msgid "Block and Delete"
 msgstr ""
 
-#: src/components/dms/AfterReportDialog.tsx:180
-msgid "Block and/or delete this conversation"
-msgstr ""
-
 #: src/screens/ProfileList/components/SubscribeMenu.tsx:125
 msgid "Block list"
 msgstr ""
@@ -1435,6 +1424,10 @@ msgstr ""
 
 #: src/components/dms/AfterReportDialog.tsx:151
 msgid "Block User"
+msgstr ""
+
+#: src/components/dms/AfterReportDialog.tsx:180
+msgid "Block user and/or delete this conversation"
 msgstr ""
 
 #: src/components/Post/Embed/index.tsx:186
@@ -1592,11 +1585,11 @@ msgstr ""
 #: src/components/LabelingServiceCard/index.tsx:62
 #: src/components/moderation/ReportDialog/index.tsx:834
 #: src/screens/Search/components/StarterPackCard.tsx:106
-#: src/screens/Search/Explore.tsx:937
+#: src/screens/Search/Explore.tsx:936
 msgid "By {0}"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:451
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:453
 msgid "By <0>{0}</0>"
 msgstr ""
 
@@ -1642,7 +1635,7 @@ msgstr ""
 #: src/components/live/GoLiveDialog.tsx:244
 #: src/components/live/GoLiveDialog.tsx:250
 #: src/components/Menu/index.tsx:350
-#: src/components/PostControls/RepostButton.tsx:210
+#: src/components/PostControls/RepostButton.tsx:209
 #: src/components/Prompt.tsx:144
 #: src/components/Prompt.tsx:146
 #: src/screens/Deactivated.tsx:158
@@ -2260,7 +2253,7 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/components/AccountList.tsx:128
+#: src/components/AccountList.tsx:135
 msgid "Continue as {0} (currently signed in)"
 msgstr ""
 
@@ -2839,7 +2832,7 @@ msgstr ""
 msgid "Discover new custom feeds"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:432
+#: src/screens/Search/Explore.tsx:431
 #: src/view/screens/Feeds.tsx:730
 msgid "Discover New Feeds"
 msgstr ""
@@ -2951,7 +2944,7 @@ msgstr ""
 msgid "Double tap to close the dialog"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:1087
+#: src/screens/VideoFeed/index.tsx:1101
 msgid "Double tap to like"
 msgstr ""
 
@@ -3351,14 +3344,6 @@ msgstr ""
 msgid "Everything else"
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:73
-msgid "Excessive mentions or replies"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:86
-msgid "Excessive or unwanted messages"
-msgstr ""
-
 #: src/components/dialogs/MutedWords.tsx:316
 msgid "Exclude users you follow"
 msgstr ""
@@ -3395,7 +3380,7 @@ msgstr ""
 msgid "Expand post text"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:972
+#: src/screens/VideoFeed/index.tsx:973
 msgid "Expands or collapses post text"
 msgstr ""
 
@@ -3536,10 +3521,10 @@ msgstr ""
 msgid "Failed to load conversations"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:468
-#: src/screens/Search/Explore.tsx:520
-#: src/screens/Search/Explore.tsx:558
-#: src/screens/Search/Explore.tsx:597
+#: src/screens/Search/Explore.tsx:467
+#: src/screens/Search/Explore.tsx:519
+#: src/screens/Search/Explore.tsx:557
+#: src/screens/Search/Explore.tsx:596
 msgid "Failed to load feeds preferences"
 msgstr ""
 
@@ -3569,14 +3554,14 @@ msgstr ""
 msgid "Failed to load preference."
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:461
-#: src/screens/Search/Explore.tsx:513
-#: src/screens/Search/Explore.tsx:551
-#: src/screens/Search/Explore.tsx:590
+#: src/screens/Search/Explore.tsx:460
+#: src/screens/Search/Explore.tsx:512
+#: src/screens/Search/Explore.tsx:550
+#: src/screens/Search/Explore.tsx:589
 msgid "Failed to load suggested feeds"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:371
+#: src/screens/Search/Explore.tsx:370
 msgid "Failed to load suggested follows"
 msgstr ""
 
@@ -3703,7 +3688,7 @@ msgstr ""
 msgid "Feed identifier"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:354
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:355
 msgid "Feed menu"
 msgstr ""
 
@@ -3846,12 +3831,7 @@ msgstr ""
 #: src/components/ProfileHoverCard/index.web.tsx:507
 #: src/screens/PostThread/components/ThreadItemAnchorFollowButton.tsx:131
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:258
-#: src/screens/VideoFeed/index.tsx:856
-msgid "Follow"
-msgstr ""
-
-#: src/view/com/profile/FollowButton.tsx:72
-msgctxt "action"
+#: src/screens/VideoFeed/index.tsx:857
 msgid "Follow"
 msgstr ""
 
@@ -3860,7 +3840,7 @@ msgstr ""
 msgid "Follow {0}"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:833
+#: src/screens/VideoFeed/index.tsx:834
 msgid "Follow {handle}"
 msgstr ""
 
@@ -3894,11 +3874,6 @@ msgstr ""
 #: src/components/ProfileCard.tsx:518
 #: src/screens/PostThread/components/ThreadItemAnchorFollowButton.tsx:129
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:256
-msgid "Follow back"
-msgstr ""
-
-#: src/view/com/profile/FollowButton.tsx:81
-msgctxt "action"
 msgid "Follow back"
 msgstr ""
 
@@ -3937,7 +3912,7 @@ msgstr ""
 #: src/components/ProfileHoverCard/index.web.tsx:506
 #: src/screens/PostThread/components/ThreadItemAnchorFollowButton.tsx:134
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:254
-#: src/screens/VideoFeed/index.tsx:854
+#: src/screens/VideoFeed/index.tsx:855
 msgid "Following"
 msgstr ""
 
@@ -3952,7 +3927,7 @@ msgstr ""
 msgid "Following {0}"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:832
+#: src/screens/VideoFeed/index.tsx:833
 msgid "Following {handle}"
 msgstr ""
 
@@ -4031,10 +4006,6 @@ msgstr ""
 
 #: src/screens/Onboarding/StepFinished/ValuePropositionPager.shared.tsx:12
 msgid "Free your feed"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:54
-msgid "Frequently Posts Unwanted Content"
 msgstr ""
 
 #: src/screens/Settings/NotificationSettings/components/PreferenceControls.tsx:157
@@ -4131,10 +4102,6 @@ msgstr ""
 msgid "Give your profile a face"
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:39
-msgid "Glaring violations of law or terms of service"
-msgstr ""
-
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:142
 msgid "Glorification of violence"
 msgstr ""
@@ -4149,8 +4116,8 @@ msgstr ""
 #: src/screens/ProfileList/components/ErrorScreen.tsx:34
 #: src/screens/ProfileList/components/ErrorScreen.tsx:40
 #: src/screens/VideoFeed/components/Header.tsx:163
-#: src/screens/VideoFeed/index.tsx:1148
-#: src/screens/VideoFeed/index.tsx:1152
+#: src/screens/VideoFeed/index.tsx:1162
+#: src/screens/VideoFeed/index.tsx:1166
 #: src/view/com/auth/LoggedOut.tsx:72
 #: src/view/screens/NotFound.tsx:57
 msgid "Go back"
@@ -4285,10 +4252,6 @@ msgstr ""
 msgid "Harassment or hate"
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:34
-msgid "Harassment, trolling, or intolerance"
-msgstr ""
-
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:189
 msgid "Harmful or high-risk activities"
 msgstr ""
@@ -4344,7 +4307,7 @@ msgstr ""
 msgid "Hidden"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:630
+#: src/screens/VideoFeed/index.tsx:631
 msgid "Hidden by your moderation settings."
 msgstr ""
 
@@ -4553,10 +4516,6 @@ msgstr ""
 msgid "If you're trying to change your handle or email, do so before you deactivate."
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:38
-msgid "Illegal and Urgent"
-msgstr ""
-
 #: src/view/com/util/images/Gallery.tsx:75
 msgid "Image"
 msgstr ""
@@ -4581,14 +4540,6 @@ msgstr ""
 
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:51
 msgid "Impersonation"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:49
-msgid "Impersonation or false claims about identity or affiliation"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:68
-msgid "Impersonation, misinformation, or false claims"
 msgstr ""
 
 #: src/screens/Settings/NotificationSettings/index.tsx:284
@@ -4617,10 +4568,6 @@ msgstr ""
 
 #: src/screens/Settings/NotificationSettings/index.tsx:273
 msgid "In-app, Push, People you follow"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:91
-msgid "Inappropriate messages or explicit links"
 msgstr ""
 
 #. Title message shown in chat requests inbox when it's empty
@@ -4944,7 +4891,7 @@ msgctxt "Name of app icon variant"
 msgid "Light"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:518
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:515
 msgid "Like"
 msgstr ""
 
@@ -4966,7 +4913,7 @@ msgstr ""
 msgid "Like notifications"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:505
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:502
 msgid "Like this feed"
 msgstr ""
 
@@ -4991,7 +4938,7 @@ msgid "Liked by {0, plural, one {# user} other {# users}}"
 msgstr ""
 
 #: src/components/LabelingServiceCard/index.tsx:96
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:493
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:490
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:290
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:304
 msgid "Liked by {likeCount, plural, one {# user} other {# users}}"
@@ -5132,12 +5079,12 @@ msgstr ""
 msgid "Live link"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:84
+#: src/screens/Search/Explore.tsx:83
 msgid "Load more"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:502
-#: src/screens/Search/Explore.tsx:579
+#: src/screens/Search/Explore.tsx:501
+#: src/screens/Search/Explore.tsx:578
 msgid "Load more suggested feeds"
 msgstr ""
 
@@ -5158,6 +5105,10 @@ msgstr ""
 
 #: src/Navigation.tsx:321
 msgid "Log"
+msgstr ""
+
+#: src/components/AccountList.tsx:191
+msgid "Logged out"
 msgstr ""
 
 #: src/screens/Settings/PrivacyAndSecuritySettings.tsx:106
@@ -5323,14 +5274,6 @@ msgstr ""
 
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:35
 msgid "Misleading"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:47
-msgid "Misleading Account"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:67
-msgid "Misleading Post"
 msgstr ""
 
 #: src/Navigation.tsx:177
@@ -5538,13 +5481,6 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:59
-#: src/lib/moderation/useReportOptions.ts:98
-#: src/lib/moderation/useReportOptions.ts:106
-#: src/lib/moderation/useReportOptions.ts:114
-msgid "Name or Description Violates Community Standards"
-msgstr ""
-
 #: src/lib/interests.ts:66
 #: src/screens/Onboarding/index.tsx:53
 msgid "Nature"
@@ -5585,7 +5521,7 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: src/view/screens/Lists.tsx:79
+#: src/view/screens/Lists.tsx:78
 #: src/view/screens/ModerationModlists.tsx:79
 msgctxt "action"
 msgid "New"
@@ -5805,7 +5741,7 @@ msgstr ""
 msgid "No results"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:794
+#: src/screens/Search/Explore.tsx:793
 msgid "No results for \"{0}\"."
 msgstr ""
 
@@ -5823,7 +5759,7 @@ msgstr ""
 msgid "No results found for {query}"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:798
+#: src/screens/Search/Explore.tsx:797
 msgid "No results."
 msgstr ""
 
@@ -5956,10 +5892,6 @@ msgstr ""
 msgid "Nudity"
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:78
-msgid "Nudity or adult content not labeled as such"
-msgstr ""
-
 #: src/lib/moderation/useLabelBehaviorDescription.ts:14
 #: src/screens/Settings/NotificationSettings/index.tsx:291
 msgid "Off"
@@ -6067,7 +5999,7 @@ msgstr ""
 msgid "Open conversation options"
 msgstr ""
 
-#: src/components/Layout/Header/index.tsx:160
+#: src/components/Layout/Header/index.tsx:159
 msgid "Open drawer menu"
 msgstr ""
 
@@ -6080,8 +6012,8 @@ msgstr ""
 msgid "Open feed info screen"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:291
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:296
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:292
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:297
 msgid "Open feed options menu"
 msgstr ""
 
@@ -6249,12 +6181,11 @@ msgstr ""
 
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:238
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:242
-#: src/lib/moderation/useReportOptions.ts:27
 #: src/view/com/composer/labels/LabelsBtn.tsx:185
 msgid "Other"
 msgstr ""
 
-#: src/components/AccountList.tsx:88
+#: src/components/AccountList.tsx:93
 msgid "Other account"
 msgstr ""
 
@@ -6383,8 +6314,8 @@ msgstr ""
 msgid "Pictures meant for adults."
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:523
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:530
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:520
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:527
 #: src/screens/SavedFeeds.tsx:351
 msgid "Pin feed"
 msgstr ""
@@ -6398,7 +6329,7 @@ msgstr ""
 msgid "Pin to home"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:337
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:338
 msgid "Pin to Home"
 msgstr ""
 
@@ -6647,7 +6578,7 @@ msgstr ""
 #: src/screens/PostThread/components/ThreadItemAnchor.tsx:134
 #: src/screens/PostThread/components/ThreadItemPost.tsx:112
 #: src/screens/PostThread/components/ThreadItemTreePost.tsx:108
-#: src/screens/VideoFeed/index.tsx:534
+#: src/screens/VideoFeed/index.tsx:535
 msgid "Post has been deleted"
 msgstr ""
 
@@ -6940,11 +6871,11 @@ msgstr ""
 msgid "Read blog post"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:973
+#: src/screens/VideoFeed/index.tsx:974
 msgid "Read less"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:973
+#: src/screens/VideoFeed/index.tsx:974
 msgid "Read more"
 msgstr ""
 
@@ -7077,8 +7008,8 @@ msgstr ""
 msgid "Remove feed?"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:319
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:325
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:320
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:326
 #: src/screens/ProfileList/components/MoreOptionsMenu.tsx:181
 #: src/screens/ProfileList/components/MoreOptionsMenu.tsx:184
 #: src/screens/SavedFeeds.tsx:340
@@ -7296,8 +7227,8 @@ msgstr ""
 msgid "Report dialog"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:546
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:552
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:543
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:549
 msgid "Report feed"
 msgstr ""
 
@@ -7523,7 +7454,7 @@ msgstr ""
 #: src/screens/Profile/ProfileFeed/index.tsx:93
 #: src/screens/ProfileList/components/ErrorScreen.tsx:35
 #: src/screens/Settings/components/ChangeHandleDialog.tsx:569
-#: src/screens/VideoFeed/index.tsx:1149
+#: src/screens/VideoFeed/index.tsx:1163
 #: src/view/screens/NotFound.tsx:60
 msgid "Returns to previous page"
 msgstr ""
@@ -7582,8 +7513,8 @@ msgstr ""
 msgid "Save QR code"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:320
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:326
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:321
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:327
 msgid "Save to my feeds"
 msgstr ""
 
@@ -7680,11 +7611,11 @@ msgstr ""
 msgid "Search for feeds that you want to suggest to others."
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:358
+#: src/screens/Search/Explore.tsx:357
 msgid "Search for more accounts"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:435
+#: src/screens/Search/Explore.tsx:434
 msgid "Search for more feeds"
 msgstr ""
 
@@ -8112,7 +8043,7 @@ msgstr ""
 msgid "Share QR code"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:474
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:471
 msgid "Share this feed"
 msgstr ""
 
@@ -8156,8 +8087,8 @@ msgstr ""
 #: src/components/moderation/ScreenHider.tsx:178
 #: src/components/moderation/ScreenHider.tsx:181
 #: src/screens/List/ListHiddenScreen.tsx:190
-#: src/screens/VideoFeed/index.tsx:633
-#: src/screens/VideoFeed/index.tsx:639
+#: src/screens/VideoFeed/index.tsx:634
+#: src/screens/VideoFeed/index.tsx:640
 msgid "Show anyway"
 msgstr ""
 
@@ -8272,11 +8203,11 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
-#: src/components/AccountList.tsx:129
+#: src/components/AccountList.tsx:136
 msgid "Sign in as {0}"
 msgstr ""
 
-#: src/screens/Login/ChooseAccountForm.tsx:80
+#: src/screens/Login/ChooseAccountForm.tsx:81
 msgid "Sign in as..."
 msgstr ""
 
@@ -8289,7 +8220,7 @@ msgstr ""
 msgid "Sign in or create your account to join the conversation!"
 msgstr ""
 
-#: src/components/AccountList.tsx:68
+#: src/components/AccountList.tsx:70
 msgid "Sign in to account that is not listed"
 msgstr ""
 
@@ -8425,7 +8356,7 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:542
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:539
 msgid "Something wrong? Let us know."
 msgstr ""
 
@@ -8456,17 +8387,11 @@ msgid "Source: <0>{sourceName}</0>"
 msgstr ""
 
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:39
-#: src/lib/moderation/useReportOptions.ts:72
-#: src/lib/moderation/useReportOptions.ts:85
 msgid "Spam"
 msgstr ""
 
 #: src/components/moderation/ReportDialog/utils/useReportOptions.ts:36
 msgid "Spam or other inauthentic behavior or deception"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:55
-msgid "Spam; excessive mentions or replies"
 msgstr ""
 
 #: src/lib/interests.ts:72
@@ -8520,7 +8445,7 @@ msgstr ""
 msgid "Starter pack is invalid"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:626
+#: src/screens/Search/Explore.tsx:625
 #: src/view/screens/Profile.tsx:231
 msgid "Starter Packs"
 msgstr ""
@@ -8607,7 +8532,7 @@ msgstr ""
 msgid "Successfully verified"
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:355
+#: src/screens/Search/Explore.tsx:354
 msgid "Suggested Accounts"
 msgstr ""
 
@@ -8754,13 +8679,6 @@ msgstr ""
 msgid "Terms of Service"
 msgstr ""
 
-#: src/lib/moderation/useReportOptions.ts:60
-#: src/lib/moderation/useReportOptions.ts:99
-#: src/lib/moderation/useReportOptions.ts:107
-#: src/lib/moderation/useReportOptions.ts:115
-msgid "Terms used violate community standards"
-msgstr ""
-
 #: src/components/dialogs/MutedWords.tsx:271
 msgid "Text & tags"
 msgstr ""
@@ -8804,7 +8722,7 @@ msgstr ""
 msgid "That's all, folks!"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:1121
+#: src/screens/VideoFeed/index.tsx:1135
 msgid "That's everything!"
 msgstr ""
 
@@ -8932,7 +8850,7 @@ msgstr ""
 msgid "There was an issue contacting the server"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:418
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:419
 #: src/screens/Profile/Header/ProfileHeaderLabeler.tsx:109
 msgid "There was an issue contacting the server, please check your internet connection and try again."
 msgstr ""
@@ -8941,7 +8859,7 @@ msgstr ""
 msgid "There was an issue fetching notifications. Tap here to try again."
 msgstr ""
 
-#: src/screens/Search/Explore.tsx:993
+#: src/screens/Search/Explore.tsx:992
 #: src/view/com/posts/PostFeed.tsx:712
 msgid "There was an issue fetching posts. Tap here to try again."
 msgstr ""
@@ -9473,11 +9391,6 @@ msgstr ""
 msgid "Undo repost ({0, plural, one {# repost} other {# reposts}})"
 msgstr ""
 
-#: src/view/com/profile/FollowButton.tsx:63
-msgctxt "action"
-msgid "Unfollow"
-msgstr ""
-
 #: src/screens/Profile/Header/ProfileHeaderStandard.tsx:242
 msgid "Unfollow {0}"
 msgstr ""
@@ -9487,7 +9400,7 @@ msgstr ""
 msgid "Unfollow account"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:837
+#: src/screens/VideoFeed/index.tsx:838
 msgid "Unfollows the user"
 msgstr ""
 
@@ -9511,7 +9424,7 @@ msgstr ""
 msgid "Unlabeled, abusive, or non-consensual adult content"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:518
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:515
 msgid "Unlike"
 msgstr ""
 
@@ -9566,8 +9479,8 @@ msgstr ""
 msgid "Unpin"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:523
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:530
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:520
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:527
 #: src/screens/SavedFeeds.tsx:351
 msgid "Unpin feed"
 msgstr ""
@@ -9576,8 +9489,8 @@ msgstr ""
 msgid "Unpin Feed"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:310
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:312
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:311
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:313
 msgid "Unpin from home"
 msgstr ""
 
@@ -9627,11 +9540,6 @@ msgstr ""
 
 #: src/view/com/composer/Composer.tsx:895
 msgid "Unsupported video type: {mimeType}"
-msgstr ""
-
-#: src/lib/moderation/useReportOptions.ts:77
-#: src/lib/moderation/useReportOptions.ts:90
-msgid "Unwanted Sexual Content"
 msgstr ""
 
 #: src/screens/Settings/components/OTAInfo.tsx:58
@@ -9951,11 +9859,11 @@ msgstr ""
 msgid "Video Games"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:1079
+#: src/screens/VideoFeed/index.tsx:1093
 msgid "Video is paused"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:1079
+#: src/screens/VideoFeed/index.tsx:1093
 msgid "Video is playing"
 msgstr ""
 
@@ -9993,9 +9901,9 @@ msgid "View {0}'s avatar"
 msgstr ""
 
 #: src/components/ProfileCard.tsx:124
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:454
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:456
 #: src/screens/Search/components/SearchProfileCard.tsx:36
-#: src/screens/VideoFeed/index.tsx:796
+#: src/screens/VideoFeed/index.tsx:797
 #: src/view/com/notifications/NotificationFeedItem.tsx:599
 msgid "View {0}'s profile"
 msgstr ""
@@ -10016,8 +9924,8 @@ msgstr ""
 msgid "View debug entry"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:661
-#: src/screens/VideoFeed/index.tsx:679
+#: src/screens/VideoFeed/index.tsx:662
+#: src/screens/VideoFeed/index.tsx:680
 msgid "View details"
 msgstr ""
 
@@ -10065,7 +9973,7 @@ msgstr ""
 msgid "View this user's verifications"
 msgstr ""
 
-#: src/screens/Profile/components/ProfileFeedHeader.tsx:489
+#: src/screens/Profile/components/ProfileFeedHeader.tsx:486
 msgid "View users who like this feed"
 msgstr ""
 
@@ -10391,7 +10299,7 @@ msgid "Why should this user be reviewed?"
 msgstr ""
 
 #: src/components/dms/AfterReportDialog.tsx:49
-msgid "Would you like to block this account or delete this conversation?"
+msgid "Would you like to block this user and/or delete this conversation?"
 msgstr ""
 
 #: src/screens/Messages/components/MessageInput.tsx:154
@@ -10861,7 +10769,7 @@ msgstr ""
 msgid "You've reached your daily limit for video uploads (too many videos)"
 msgstr ""
 
-#: src/screens/VideoFeed/index.tsx:1130
+#: src/screens/VideoFeed/index.tsx:1144
 msgid "You've run out of videos to watch. Maybe it's a good time to take a break?"
 msgstr ""
 
