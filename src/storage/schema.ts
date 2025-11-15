@@ -40,6 +40,7 @@ export type Device = {
   // deer
   deerGateCache: string
   activitySubscriptionsNudged?: boolean
+  threadgateNudged?: boolean
 
   /**
    * Policy update overlays. New IDs are required for each new announcement.
